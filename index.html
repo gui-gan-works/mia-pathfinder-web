@@ -207,6 +207,7 @@ input[type="range"] { width: 100%; accent-color: var(--sky); }
 .legend { display: flex; flex-wrap: wrap; gap: 8px 20px; font-size: 14px; color: var(--head); }
 .legend i { display: inline-block; width: 22px; height: 4px; border-radius: 2px; vertical-align: middle; margin-right: 8px; }
 .note { font-size: 14.5px; color: var(--muted); }
+.nc, .readout span.nc { text-transform: none; }
 
 /* ---------- Del cielo al dato ---------- */
 /* cada paso: foto cuadrada a la izquierda, texto a la derecha */
@@ -476,13 +477,13 @@ dialog.lightbox::backdrop { background: rgba(5, 8, 20, 0.88); }
         </div>
         <button class="btn" id="playBtn" type="button" aria-pressed="false">Pausar el tránsito</button>
       </div>
-      <canvas id="fringeCanvas" height="420" data-i18n-aria="fr.aria" aria-label="Salida del correlador de los tres pares de antenas en función del ángulo: tres franjas de interferencia, una por par, dentro del haz de una antena de 5 metros, con una fuente que cruza el haz." role="img"></canvas>
+      <canvas id="fringeCanvas" height="540" data-i18n-aria="fr.aria" aria-label="Salida del correlador de los tres pares de antenas en función del ángulo: tres franjas de interferencia, una por par, y debajo su promedio, el haz sintetizado, todo dentro del haz de una antena de 5 metros, con una fuente que cruza el haz." role="img"></canvas>
       <div class="readouts">
-        <div class="readout k12"><span data-i18n="fr.r1">Franjas I–II · λ/B</span><b id="r12">–</b></div>
-        <div class="readout k23"><span data-i18n="fr.r2">Franjas II–III · λ/B</span><b id="r23">–</b></div>
-        <div class="readout k13"><span data-i18n="fr.r3">Franjas I–III · λ/B</span><b id="r13">–</b></div>
+        <div class="readout k12"><span data-i18n="fr.r1">Franjas I–II · <span class="nc">λ</span>/B</span><b id="r12">–</b></div>
+        <div class="readout k23"><span data-i18n="fr.r2">Franjas II–III · <span class="nc">λ</span>/B</span><b id="r23">–</b></div>
+        <div class="readout k13"><span data-i18n="fr.r3">Franjas I–III · <span class="nc">λ</span>/B</span><b id="r13">–</b></div>
       </div>
-      <p class="note" data-i18n="fr.note">Cada franja es la salida del correlador de un par para una fuente puntual en cada ángulo; la línea punteada es el haz de una antena (2,6° a −3 dB, según la simulación). El par más separado, I–III, da las franjas más finas. La línea vertical marca una fuente que cruza el cenit del IAR (latitud −34,9°), arrastrada por la rotación terrestre a 12,3° por hora: tarda unos 13 minutos en atravesar el haz.</p>
+      <p class="note" data-i18n="fr.note">Cada una de las tres primeras trazas es la salida del correlador de un par para una fuente puntual en cada ángulo; la línea punteada es el haz de una antena (2,6° a −3 dB, según la simulación). El par más separado, I–III, da las franjas más finas. La cuarta traza no es otra salida del correlador, que multiplica las señales de a pares: es el promedio de las tres, el haz sintetizado del arreglo en ese instante. Donde las tres franjas coinciden se forma un pico más angosto que el haz de una antena, pero con solo tres pares aparecen al costado otros picos casi tan altos (con 60 y 40 m, a 1420 MHz, el dibujo se repite cada 0,6°); más pares y la rotación terrestre los reducen (ver «Síntesis de apertura»). La línea vertical marca una fuente que cruza el cenit del IAR (latitud −34,9°), arrastrada por la rotación terrestre a 12,3° por hora: tarda unos 13 minutos en atravesar el haz.</p>
     </div>
   </div>
 </section>
@@ -788,11 +789,11 @@ dialog.lightbox::backdrop { background: rgba(5, 8, 20, 0.88); }
     'fr.b12': `Distance MIA I – MIA II`,
     'fr.b23': `Distance MIA II – MIA III`,
     'fr.f': `Frequency`,
-    'fr.aria': `Correlator output of the three antenna pairs versus angle: three sets of interference fringes, one per pair, inside the beam of a 5-metre antenna, with a source crossing the beam.`,
-    'fr.r1': `Fringes I–II · λ/B`,
-    'fr.r2': `Fringes II–III · λ/B`,
-    'fr.r3': `Fringes I–III · λ/B`,
-    'fr.note': `Each trace is one pair's correlator output for a point source at each angle; the dotted line is the beam of one antenna (2.6° at −3 dB, from the simulation). The most widely separated pair, I–III, gives the finest fringes. The vertical line marks a source crossing the IAR zenith (latitude −34.9°), carried by the Earth's rotation at 12.3° per hour: it takes about 13 minutes to cross the beam.`,
+    'fr.aria': `Correlator output of the three antenna pairs versus angle: three sets of interference fringes, one per pair, and below them their average, the synthesized beam, all inside the beam of a 5-metre antenna, with a source crossing the beam.`,
+    'fr.r1': `Fringes I–II · <span class="nc">λ</span>/B`,
+    'fr.r2': `Fringes II–III · <span class="nc">λ</span>/B`,
+    'fr.r3': `Fringes I–III · <span class="nc">λ</span>/B`,
+    'fr.note': `Each of the first three traces is one pair's correlator output for a point source at each angle; the dotted line is the beam of one antenna (2.6° at −3 dB, from the simulation). The most widely separated pair, I–III, gives the finest fringes. The fourth trace is not another correlator output, since the correlator multiplies the signals in pairs: it is the average of the three, the array's synthesized beam at that instant. Where the three fringe patterns line up, a peak narrower than one antenna's beam forms, but with only three pairs other peaks almost as high appear beside it (with 60 and 40 m at 1420 MHz the pattern repeats every 0.6°); more pairs and the Earth's rotation reduce them (see “Aperture synthesis”). The vertical line marks a source crossing the IAR zenith (latitude −34.9°), carried by the Earth's rotation at 12.3° per hour: it takes about 13 minutes to cross the beam.`,
     'pipe.eyebrow': `From sky to data · phase 1`,
     'pipe.h2': `Six steps for each antenna`,
     'pipe.lede': `This is the signal path in the Pathfinder's current configuration. Each antenna receives two linear polarizations and carries them over optical fibre to the control room.`,
@@ -938,8 +939,10 @@ dialog.lightbox::backdrop { background: rgba(5, 8, 20, 0.88); }
   // Strings built by the script itself (charts, canvas labels, button).
   const UI = {
     es: { pause: 'Pausar el tránsito', resume: 'Reanudar el tránsito', angle: 'ángulo respecto del centro del haz',
+          sum: 'Promedio de los tres pares · haz sintetizado',
           rows: ['Antena de 5 m', 'Antena de 30 m (IAR)', 'Pathfinder, B = 100 m', 'Fase 2, B = 55 km'] },
     en: { pause: 'Pause the transit', resume: 'Resume the transit', angle: 'angle from the beam centre',
+          sum: 'Average of the three pairs · synthesized beam',
           rows: ['5 m antenna', '30 m antenna (IAR)', 'Pathfinder, B = 100 m', 'Phase 2, B = 55 km'] }
   };
   let lang = 'es';
@@ -1048,31 +1051,42 @@ dialog.lightbox::backdrop { background: rgba(5, 8, 20, 0.88); }
   function drawFringe() {
     const { ctx, w, h } = sizeCanvas(fc);
     const lambda = C / (+fIn.value * 1e6);
-    const padL = 12, padR = 12, padT = 8, padB = 46, gap = 12;
-    const laneH = (h - padT - padB - 2 * gap) / 3;
+    // four lanes: the three pairs, then (after a separator) their average, the synthesized beam
+    const padL = 12, padR = 12, padT = 8, padB = 46, gap = 12, sumGap = 26;
+    const laneH = (h - padT - padB - 2 * gap - sumGap) / 4;
     const X = (d) => padL + (d + SPAN) / (2 * SPAN) * (w - padL - padR);
     const sigma = HPBW / 2.3548;
     const env = (d) => Math.exp(-0.5 * (d / sigma) ** 2);
     const N = Math.max(600, Math.round(w * 2));
     const xs = X(srcDeg);
+    const Bs = PAIRS3.map((p) => p.B());
+    const fringe = (B, d) => Math.cos(2 * Math.PI * B * Math.sin(d * DEG) / lambda);
+    const lanes = PAIRS3.map((p, k) => ({
+      top: padT + k * (laneH + gap), col: css(p.col), label: p.name + ' · B = ' + Bs[k] + ' m',
+      f: (d) => fringe(Bs[k], d)
+    }));
+    const sumTop = padT + 3 * laneH + 2 * gap + sumGap;
+    lanes.push({ top: sumTop, col: css('--head'), label: UI[lang].sum, f: (d) => (fringe(Bs[0], d) + fringe(Bs[1], d) + fringe(Bs[2], d)) / 3 });
     ctx.clearRect(0, 0, w, h);
     ctx.fillStyle = css('--surface'); ctx.fillRect(0, 0, w, h);
     ctx.font = '12px "Open Sans", Arial, sans-serif';
-    // angle grid, shared by the three pairs
+    // angle grid, shared by the four lanes
     ctx.strokeStyle = css('--line'); ctx.lineWidth = 1; ctx.fillStyle = css('--muted'); ctx.textAlign = 'center';
     for (let d = -4; d <= 4; d += 1) {
       ctx.beginPath(); ctx.moveTo(X(d), padT); ctx.lineTo(X(d), h - padB); ctx.stroke();
       ctx.fillText((d > 0 ? '+' : d < 0 ? '−' : '') + Math.abs(d) + '°', X(d), h - padB + 16);
     }
     ctx.fillText(UI[lang].angle, (padL + w - padR) / 2, h - 6);
-    // the source, crossing all three pairs at once
+    // separator between the pairs and their sum
+    ctx.strokeStyle = css('--muted'); ctx.lineWidth = 1;
+    ctx.beginPath(); ctx.moveTo(padL, sumTop - sumGap / 2); ctx.lineTo(w - padR, sumTop - sumGap / 2); ctx.stroke();
+    // the source, crossing all lanes at once
     ctx.strokeStyle = css('--ink'); ctx.globalAlpha = 0.5; ctx.lineWidth = 1.2;
     ctx.beginPath(); ctx.moveTo(xs, padT); ctx.lineTo(xs, h - padB); ctx.stroke();
     ctx.globalAlpha = 1;
-    PAIRS3.forEach((p, k) => {
-      const top = padT + k * (laneH + gap), mid = top + laneH / 2, amp = laneH / 2 - 8;
+    lanes.forEach((ln) => {
+      const mid = ln.top + laneH / 2, amp = laneH / 2 - 8;
       const Y = (v) => mid - v * amp;
-      const B = p.B();
       ctx.strokeStyle = css('--line'); ctx.lineWidth = 1;
       ctx.beginPath(); ctx.moveTo(padL, mid); ctx.lineTo(w - padR, mid); ctx.stroke();
       // single-antenna beam envelope
@@ -1083,23 +1097,22 @@ dialog.lightbox::backdrop { background: rgba(5, 8, 20, 0.88); }
         ctx.stroke();
       });
       ctx.setLineDash([]);
-      // fringes of this pair
-      ctx.strokeStyle = css(p.col); ctx.lineWidth = 2; ctx.beginPath();
+      // the trace of this lane
+      ctx.strokeStyle = ln.col; ctx.lineWidth = 2; ctx.beginPath();
       for (let i = 0; i <= N; i++) {
         const d = -SPAN + i * 2 * SPAN / N;
-        const v = env(d) * Math.cos(2 * Math.PI * B * Math.sin(d * DEG) / lambda);
+        const v = env(d) * ln.f(d);
         i ? ctx.lineTo(X(d), Y(v)) : ctx.moveTo(X(d), Y(v));
       }
       ctx.stroke();
       // label with colour key
-      const label = p.name + ' · B = ' + B + ' m';
       ctx.textAlign = 'left';
-      const tw = ctx.measureText(label).width;
-      ctx.fillStyle = css('--surface'); ctx.fillRect(padL + 2, top + 1, tw + 32, 19);
-      ctx.fillStyle = css(p.col); ctx.fillRect(padL + 8, top + 8, 16, 4);
-      ctx.fillStyle = css('--ink'); ctx.fillText(label, padL + 30, top + 14);
-      // where the source sits on this pair's fringes
-      const vs = env(srcDeg) * Math.cos(2 * Math.PI * B * Math.sin(srcDeg * DEG) / lambda);
+      const tw = ctx.measureText(ln.label).width;
+      ctx.fillStyle = css('--surface'); ctx.fillRect(padL + 2, ln.top + 1, tw + 32, 19);
+      ctx.fillStyle = ln.col; ctx.fillRect(padL + 8, ln.top + 8, 16, 4);
+      ctx.fillStyle = css('--ink'); ctx.fillText(ln.label, padL + 30, ln.top + 14);
+      // where the source sits on this lane
+      const vs = env(srcDeg) * ln.f(srcDeg);
       ctx.fillStyle = css('--ink'); ctx.beginPath(); ctx.arc(xs, Y(vs), 5, 0, 2 * Math.PI); ctx.fill();
     });
   }
