@@ -738,7 +738,7 @@ dialog.lightbox::backdrop { background: rgba(5, 8, 20, 0.88); }
     <div class="sec-head">
       <p class="eyebrow" data-i18n="pub.eyebrow">Publicaciones</p>
       <h2 data-i18n="pub.h2">Artículos sobre MIA</h2>
-      <p class="lede" data-i18n="pub.lede">Trabajos sobre el proyecto, el Pathfinder y la ciencia que hará MIA. Todos se pueden leer en línea sin costo.</p>
+      <p class="lede" data-i18n="pub.lede">Trabajos sobre el proyecto, el Pathfinder, la ciencia que hará MIA y los métodos para ubicar sus antenas y calibrarlo. Todos tienen una versión que se puede leer en línea sin costo.</p>
     </div>
     <ol class="papers">
       <li class="paper">
@@ -768,6 +768,27 @@ dialog.lightbox::backdrop { background: rgba(5, 8, 20, 0.88); }
         <p class="paper-authors">L. F. Cabral</p>
         <p class="paper-note" data-i18n="pub.n4">Simulador de la respuesta de un interferómetro según la posición de las antenas, con simulaciones para MIA.</p>
         <p class="paper-links"><a href="https://doi.org/10.22201/ia.14052059p.2024.56.15">DOI</a></p>
+      </li>
+      <li class="paper">
+        <p class="paper-meta">RPIC 2023, 157–163 · 2023</p>
+        <h3 lang="en">Python implementation and validation of an Optimization Method for Interferometric Antenna Arrays</h3>
+        <p class="paper-authors">L. Cabral, M. Fernández Corazza, G. Gancio, P. Benaglia</p>
+        <p class="paper-note" data-i18n="pub.n7">Método para optimizar la posición de las antenas a partir de una distribución inicial al azar y de la densidad de muestras buscada en el plano (u, v), con las restricciones del terreno. Incluye un caso simplificado de MIA. XX Reunión de Trabajo en Procesamiento de la Información y Control (Oberá, 2023).</p>
+        <p class="paper-links"><a href="https://sedici.unlp.edu.ar/handle/10915/167113">SEDICI</a></p>
+      </li>
+      <li class="paper">
+        <p class="paper-meta">IEEE TAP 74(6), 5326–5334 · 2026</p>
+        <h3 lang="en">Staged Array Configuration Optimization for the Multipurpose Interferometer Array</h3>
+        <p class="paper-authors">L. Cabral, M. Fernández Corazza, G. Gancio, P. Benaglia</p>
+        <p class="paper-note" data-i18n="pub.n8">Extiende un método de optimización por gradiente a observaciones largas y a arreglos que crecen por etapas, y lo aplica a la distribución de las antenas de MIA según la declinación y la duración de las observaciones, con el efecto del relieve del terreno. La versión preliminar, de libre acceso, está en TechRxiv (2024).</p>
+        <p class="paper-links"><a href="https://doi.org/10.1109/TAP.2026.3671813">DOI</a><a href="https://doi.org/10.36227/techrxiv.173220746.65584156/v1">TechRxiv</a></p>
+      </li>
+      <li class="paper">
+        <p class="paper-meta">arXiv · 2026</p>
+        <h3 lang="en">Radio Interferometric Calibration with the Exponential Map</h3>
+        <p class="paper-authors">L. Cabral, M. Fernández Corazza, G. Gancio, P. Benaglia</p>
+        <p class="paper-note" data-i18n="pub.n9">Estimador rápido de máxima verosimilitud para calibrar un interferómetro, probado con una observación real del Submillimeter Array. Enviado a IEEE Transactions on Signal Processing.</p>
+        <p class="paper-links"><a href="https://arxiv.org/abs/2610.01895">arXiv:2610.01895</a></p>
       </li>
       <li class="paper">
         <p class="paper-meta">RMxAC 56, 145–149 · 2024</p>
@@ -1028,13 +1049,16 @@ dialog.lightbox::backdrop { background: rgba(5, 8, 20, 0.88); }
     'nav.pub': `Papers`,
     'pub.eyebrow': `Publications`,
     'pub.h2': `Papers on MIA`,
-    'pub.lede': `Papers on the project, the Pathfinder and the science MIA will do. All of them can be read online free of charge.`,
+    'pub.lede': `Papers on the project, the Pathfinder, the science MIA will do and the methods to place its antennas and calibrate it. All of them have a version that can be read online free of charge.`,
     'pub.n1': `The instrument proposal and the status of each stage of the Pathfinder. Presented at the IAR 60th-anniversary workshop.`,
     'pub.n2': `Version presented at the 65th Annual Meeting of the Argentine Astronomical Association (San Juan, 2022), with the status of the Pathfinder and the short-term plan.`,
     'pub.n3': `Design and progress of the Pathfinder electronics built at the IAR Electronics Laboratory: positioning control, radio frequency, acquisition and processing.`,
     'pub.n4': `A simulator of an interferometer’s response as a function of the antenna positions, with simulations for MIA.`,
     'pub.n5': `Prospects for observing the 21 cm line of the reionization epoch with MIA.`,
     'pub.n6': `The IAR’s scientific output and MIA’s science goals.`,
+    'pub.n7': `A method to optimize antenna positions from a random initial layout and a target sample density in the (u, v) plane, taking terrain constraints into account. It includes a simplified MIA case. 20th Workshop on Information Processing and Control, RPIC (Oberá, 2023).`,
+    'pub.n8': `Extends a gradient-based optimization method to long-track observations and to arrays that grow in stages, and applies it to the layout of the MIA antennas according to the declination and length of the observations, including the effect of the terrain's elevation. The preprint, free to read, is on TechRxiv (2024).`,
+    'pub.n9': `A fast maximum-likelihood estimator to calibrate an interferometer, tested on a real observation with the Submillimeter Array. Submitted to IEEE Transactions on Signal Processing.`,
     'pub.ws.meta': `Buenos Aires · 15–18 November 2022`,
     'pub.ws.h3': `IAR 60th-anniversary workshop`,
     'pub.ws.p1': `<i lang="en">Prospects for Low Frequency Radio Astronomy in South America</i>. MIA was presented there, and the proceedings make up volume 56 of the <i>Revista Mexicana de Astronomía y Astrofísica, Serie de Conferencias</i> (2024), which holds most of the papers in this list.`,
