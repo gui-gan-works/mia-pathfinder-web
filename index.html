@@ -1,0 +1,1240 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>MIA Pathfinder · IAR</title>
+<meta name="description" content="MIA Pathfinder: prototipo de tres antenas del Multipurpose Interferometric Array (MIA) del Instituto Argentino de Radioastronomía.">
+<meta name="theme-color" content="#1A237E">
+<link rel="icon" href="img/favicon.png" type="image/png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,400;0,600;0,700;1,400&family=Raleway:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Estilo visual del sitio del IAR (www.iar.unlp.edu.ar): Raleway en títulos y menú, Open Sans en el texto,
+   el índigo del logo (#1A237E, #303F9F) y el celeste #029FE2 como acento. Encabezado blanco con el logo,
+   banner fotográfico con el título centrado, títulos de sección en mayúsculas con una raya corta debajo,
+   y pie negro con los logos del CONICET, la CIC y la UNLP.
+   Idioma: el castellano está escrito en la página; el botón ES/EN cambia cada [data-i18n] con la tabla EN.
+   Colores de las tres series (pares de antenas) verificados para daltonismo en modo claro y oscuro. */
+:root {
+  --bg: #FFFFFF;
+  --surface: #FFFFFF;
+  --band: #F5F6FA;
+  --ink: #3B3838;
+  --head: #333333;
+  --muted: #666666;
+  --line: #DFE1E8;
+  --brand: #1A237E;
+  --accent-ink: #303F9F;
+  --hover: #0277BD;
+  --sky: #3949AB;
+  --grass: #2E8B57;
+  --signal: #0288D1;
+  --sky-ink: #303F9F;
+  --grass-ink: #23704A;
+  --signal-ink: #01579B;
+  --btn: #303F9F;
+  --btn-hover: #1A237E;
+  --thead: #303F9F;
+  --row: #F5F6FA;
+  --row2: #ECEEF5;
+  --photo-bg: #E8EAF2;
+  --header-bg: #FFFFFF;
+  --logo-filter: none;
+  --font-display: 'Raleway', 'Helvetica Neue', Arial, sans-serif;
+  --font-body: 'Open Sans', Helvetica, Arial, sans-serif;
+  --font-mono: 'IBM Plex Mono', 'Courier New', monospace;
+  --measure: 66ch;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0F1424; --surface: #161C2E; --band: #121829; --ink: #E3E5EE; --head: #F2F3F8; --muted: #A3A8BD; --line: #2A3150;
+    --brand: #C5CAE9; --accent-ink: #9FA8DA; --hover: #4FC3F7;
+    --sky: #4F5CB9; --grass: #41A068; --signal: #1AA0DC; --sky-ink: #9FA8DA; --grass-ink: #7CC79A; --signal-ink: #6CC5F0;
+    --btn: #3949AB; --btn-hover: #4F5CB9; --thead: #26306E; --row: #161C2E; --row2: #1B2238;
+    --photo-bg: #1B2238; --header-bg: #0F1424; --logo-filter: brightness(0) invert(1); color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0F1424; --surface: #161C2E; --band: #121829; --ink: #E3E5EE; --head: #F2F3F8; --muted: #A3A8BD; --line: #2A3150;
+  --brand: #C5CAE9; --accent-ink: #9FA8DA; --hover: #4FC3F7;
+  --sky: #4F5CB9; --grass: #41A068; --signal: #1AA0DC; --sky-ink: #9FA8DA; --grass-ink: #7CC79A; --signal-ink: #6CC5F0;
+  --btn: #3949AB; --btn-hover: #4F5CB9; --thead: #26306E; --row: #161C2E; --row2: #1B2238;
+  --photo-bg: #1B2238; --header-bg: #0F1424; --logo-filter: brightness(0) invert(1); color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+body {
+  margin: 0; background: var(--bg); color: var(--ink);
+  font-family: var(--font-body); font-size: 16px; line-height: 1.7;
+  font-variant-numeric: lining-nums; /* Raleway trae números antiguos por defecto */
+}
+.wrap {
+  max-width: 1170px; margin: 0 auto;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+}
+h1, h2, h3 { font-family: var(--font-display); color: var(--head); line-height: 1.2; text-wrap: balance; margin: 0; }
+h2 { font-size: clamp(26px, 3.2vw, 36px); font-weight: 600; letter-spacing: 0.01em; text-transform: uppercase; }
+h3 { font-size: 20px; font-weight: 600; line-height: 1.3; }
+p { margin: 0; }
+a { color: var(--accent-ink); text-underline-offset: 3px; }
+a:hover { color: var(--hover); }
+a:focus-visible, button:focus-visible, input:focus-visible { outline: 3px solid var(--hover); outline-offset: 3px; }
+.eyebrow {
+  font-family: var(--font-display); font-weight: 700; font-size: 13px; letter-spacing: 0.14em; text-transform: uppercase;
+  color: var(--accent-ink);
+}
+.mono { font-family: var(--font-mono); font-variant-numeric: lining-nums tabular-nums; font-size: 0.93em; }
+.lede { font-size: 18px; line-height: 1.7; color: var(--ink); max-width: var(--measure); }
+.prose { display: flex; flex-direction: column; gap: 16px; max-width: var(--measure); }
+.muted { color: var(--muted); }
+section { padding-block: clamp(56px, 7vw, 96px); }
+.band { background: var(--band); }
+.sec-head { display: flex; flex-direction: column; align-items: center; text-align: center; gap: 12px; max-width: 900px; margin: 0 auto 48px; }
+.sec-head h2::after { content: ""; display: block; width: 80px; height: 1px; background: var(--head); margin: 22px auto 0; }
+.sec-head .lede { margin-top: 8px; }
+figure { margin: 0; }
+figcaption { font-size: 14px; line-height: 1.5; color: var(--muted); margin-top: 10px; }
+
+/* ---------- Encabezado: logo del IAR, índice de secciones e idioma ---------- */
+.topnav { position: sticky; top: 0; z-index: 20; background: var(--header-bg); border-bottom: 1px solid var(--line); box-shadow: 0 1px 8px rgba(0, 0, 0, 0.05); }
+.topnav-in { display: flex; align-items: center; gap: 20px; min-height: 72px; }
+.brand { flex: none; display: flex; align-items: center; text-decoration: none; }
+.brand img { display: block; height: 46px; width: auto; filter: var(--logo-filter); }
+.navlinks { display: flex; list-style: none; margin: 0; padding: 0; flex: 1; min-width: 0; overflow-x: auto; scrollbar-width: none; }
+.navlinks li:first-child { margin-left: auto; }
+.navlinks::-webkit-scrollbar { display: none; }
+.navlinks a {
+  display: block; white-space: nowrap; font-family: var(--font-display); font-weight: 600; font-size: 13px; letter-spacing: 0.08em; text-transform: uppercase;
+  color: var(--head); text-decoration: none; padding: 10px 10px; transition: color 0.3s ease-in-out;
+}
+.navlinks a:hover, .navlinks a[aria-current="true"] { color: var(--hover); }
+main section { scroll-margin-top: 72px; }
+.lang { flex: none; display: inline-flex; gap: 2px; padding: 2px; border: 1px solid var(--line); border-radius: 4px; background: var(--surface); }
+.lang button {
+  font-family: var(--font-display); font-weight: 700; font-size: 12.5px; letter-spacing: 0.08em; cursor: pointer;
+  border: 0; background: transparent; color: var(--muted); padding: 6px 12px; border-radius: 3px; min-height: 32px;
+}
+.lang button:hover { color: var(--head); }
+.lang button[aria-pressed="true"] { background: var(--btn); color: #FFFFFF; }
+
+/* ---------- Banner ---------- */
+.hero-banner { position: relative; display: grid; place-items: center; min-height: clamp(380px, 46vw, 600px); overflow: hidden; background: #0B1030; }
+.hero-banner img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 50% 45%; background: var(--photo-bg); }
+.hero-banner::after { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(5, 10, 40, 0.30), rgba(5, 10, 40, 0.58)); pointer-events: none; }
+.hero-in { position: relative; z-index: 1; text-align: center; color: #FFFFFF; pointer-events: none; padding-block: 48px; }
+.hero-kicker { font-family: var(--font-display); font-weight: 600; font-size: 13px; letter-spacing: 0.16em; text-transform: uppercase; color: rgba(255, 255, 255, 0.92); }
+.hero h1 { color: #FFFFFF; font-weight: 500; font-size: clamp(42px, 6.4vw, 76px); line-height: 1.05; margin-top: 16px; text-shadow: 0 2px 18px rgba(0, 0, 0, 0.35); }
+.hero h1 span { display: block; font-weight: 700; font-size: clamp(15px, 1.9vw, 22px); letter-spacing: 0.1em; text-transform: uppercase; margin-top: 18px; }
+.hero-banner .tag {
+  position: absolute; left: 16px; bottom: 14px; z-index: 1; pointer-events: none;
+  font-family: var(--font-display); font-weight: 600; font-size: 12px; letter-spacing: 0.08em;
+  background: rgba(0, 0, 0, 0.5); color: #FFFFFF; padding: 5px 10px; border-radius: 3px;
+}
+.hero-cap { font-size: 14px; line-height: 1.5; color: var(--muted); margin-top: 10px; }
+.hero-body { display: flex; flex-direction: column; align-items: center; text-align: center; padding-block: 28px clamp(56px, 7vw, 88px); }
+.hero-body .lede { max-width: 820px; }
+.specs { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px; margin-top: 40px; width: 100%; max-width: 900px; }
+.specs div { display: flex; flex-direction: column; align-items: center; gap: 4px; }
+.specs b { font-family: var(--font-display); font-size: clamp(26px, 3vw, 36px); font-weight: 700; line-height: 1.1; color: var(--brand); }
+.specs span { font-family: var(--font-display); font-weight: 600; font-size: 12.5px; color: var(--muted); letter-spacing: 0.08em; text-transform: uppercase; }
+
+/* ---------- La idea: resolución ---------- */
+.two { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: clamp(28px, 5vw, 64px); align-items: start; }
+.formula {
+  font-family: var(--font-mono); font-size: 19px; padding: 14px 18px; border-left: 3px solid var(--signal);
+  background: var(--band); color: var(--head);
+}
+.chart-box { background: var(--surface); border: 1px solid var(--line); border-radius: 4px; padding: 22px 20px 16px; }
+.chart-box h3 { margin-bottom: 4px; }
+svg text { font-family: var(--font-body); }
+.res-chart .bar { fill: var(--sky); }
+.res-chart .bar.hl { fill: var(--signal); }
+.res-chart .axis { stroke: var(--line); }
+.res-chart .tick { fill: var(--muted); font-size: 12px; }
+.res-chart .lab { fill: var(--head); font-size: 13px; }
+.res-chart .val { fill: var(--head); font-size: 13px; font-weight: 600; }
+
+/* ---------- Diagrama de geometría ---------- */
+.geo .dish { fill: none; stroke: var(--head); stroke-width: 3; }
+.geo .mast { stroke: var(--head); stroke-width: 3; }
+.geo .ground { stroke: var(--line); stroke-width: 2; }
+.geo .wave { stroke: var(--sky); stroke-width: 2; stroke-dasharray: 2 6; }
+.geo .wavefront { stroke: var(--sky); stroke-width: 2.5; }
+.geo .extra { stroke: var(--signal); stroke-width: 5; stroke-linecap: round; }
+.geo .cable { stroke: var(--muted); stroke-width: 2; fill: none; }
+.geo .box { fill: var(--surface); stroke: var(--head); stroke-width: 2; }
+.geo .t { fill: var(--head); font-size: 15px; }
+.geo .t.acc { fill: var(--signal-ink); }
+.geo .t.sky { fill: var(--sky-ink); }
+.geo .t.mut { fill: var(--muted); font-size: 13px; }
+.geo .extra.g { stroke: var(--grass); }
+.geo .t.grn { fill: var(--grass-ink); }
+.geo .dim { stroke-width: 1.5; fill: none; }
+.geo .dim.s { stroke: var(--sky); }
+.geo .dim.g { stroke: var(--grass); }
+.readout.k12 { border-top: 3px solid var(--sky); }
+.readout.k23 { border-top: 3px solid var(--grass); }
+.readout.k13 { border-top: 3px solid var(--signal); }
+
+/* ---------- Instrumentos (canvas) ---------- */
+.instrument { background: var(--surface); border: 1px solid var(--line); border-radius: 4px; padding: clamp(16px, 2.5vw, 28px); display: flex; flex-direction: column; gap: 18px; }
+.instrument canvas { width: 100%; display: block; border-radius: 3px; }
+.controls { display: flex; flex-wrap: wrap; gap: 18px 28px; align-items: end; }
+.control { display: flex; flex-direction: column; gap: 6px; min-width: 220px; flex: 1; }
+.control label { font-family: var(--font-display); font-weight: 600; font-size: 12.5px; letter-spacing: 0.08em; color: var(--muted); text-transform: uppercase; }
+.control output { font-family: var(--font-display); font-weight: 600; font-size: 18px; color: var(--head); }
+input[type="range"] { width: 100%; accent-color: var(--sky); }
+.readouts { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
+.readout { border-top: 1px solid var(--line); padding-top: 10px; display: flex; flex-direction: column; gap: 2px; }
+.readout span { font-family: var(--font-display); font-weight: 600; font-size: 12px; color: var(--muted); letter-spacing: 0.08em; text-transform: uppercase; }
+.readout b { font-family: var(--font-display); font-size: 26px; font-weight: 700; color: var(--head); }
+.btn {
+  font-family: var(--font-display); font-weight: 600; font-size: 14px; letter-spacing: 0.04em; cursor: pointer;
+  border: 0; background: var(--btn); color: #FFFFFF; padding: 11px 18px; border-radius: 4px; transition: background-color 0.3s ease;
+}
+.btn:hover { background: var(--btn-hover); }
+.seg { display: flex; flex-wrap: wrap; gap: 8px; }
+.seg input { position: absolute; opacity: 0; pointer-events: none; }
+.seg label {
+  font-family: var(--font-display); font-weight: 600; font-size: 14px; padding: 8px 14px; border-radius: 4px; cursor: pointer;
+  border: 1px solid var(--line); color: var(--head); text-transform: none; letter-spacing: 0;
+}
+.seg input:checked + label { border-color: var(--btn); background: var(--btn); color: #FFFFFF; }
+.seg input:focus-visible + label { outline: 3px solid var(--hover); outline-offset: 2px; }
+.legend { display: flex; flex-wrap: wrap; gap: 8px 20px; font-size: 14px; color: var(--head); }
+.legend i { display: inline-block; width: 22px; height: 4px; border-radius: 2px; vertical-align: middle; margin-right: 8px; }
+.note { font-size: 14.5px; color: var(--muted); }
+
+/* ---------- Del cielo al dato ---------- */
+/* cada paso: foto cuadrada a la izquierda, texto a la derecha */
+.steps { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 36px 48px; }
+.step { display: grid; grid-template-columns: 136px minmax(0, 1fr); column-gap: 20px; row-gap: 6px; align-content: start; min-width: 0; }
+.step figure { grid-column: 1; grid-row: 1 / span 4; }
+.step > :not(figure) { grid-column: 2; }
+.step figure img { width: 100%; height: auto; aspect-ratio: 1 / 1; object-fit: cover; border-radius: 3px; background: var(--photo-bg); display: block; }
+.step .num { font-family: var(--font-display); font-weight: 700; font-size: 12.5px; color: var(--signal-ink); letter-spacing: 0.14em; }
+.step p { font-size: 15.5px; line-height: 1.65; }
+.step .parts { font-family: var(--font-mono); font-size: 12.5px; color: var(--muted); line-height: 1.5; }
+.chain-scroll { overflow-x: auto; margin-top: 52px; background: var(--surface); border: 1px solid var(--line); border-radius: 4px; padding: 20px; }
+.chain { min-width: 860px; width: 100%; height: auto; display: block; }
+.chain .blk { fill: var(--band); stroke: var(--head); stroke-width: 1.6; }
+.chain .blk.acc { stroke: var(--signal); stroke-width: 2.4; }
+.chain .zone { fill: none; stroke: var(--line); stroke-width: 1.5; stroke-dasharray: 5 5; }
+.chain .ln { stroke: var(--head); stroke-width: 1.8; fill: none; }
+.chain .fiber { stroke: var(--signal); stroke-width: 3; fill: none; stroke-dasharray: 10 6; }
+.chain .t { fill: var(--head); font-size: 14px; font-weight: 600; }
+.chain .ts { fill: var(--muted); font-size: 12px; }
+.chain .tz { fill: var(--accent-ink); font-size: 12px; font-weight: 700; letter-spacing: 0.08em; }
+
+/* ---------- Fases ---------- */
+.table-scroll { overflow-x: auto; }
+table.phases { width: 100%; border-collapse: collapse; min-width: 780px; font-size: 15.5px; }
+table.phases th, table.phases td { text-align: left; vertical-align: top; padding: 12px 14px; }
+table.phases thead th { background: var(--thead); color: #FFFFFF; font-family: var(--font-display); font-size: 17px; font-weight: 700; }
+table.phases thead th .eyebrow { color: #C5CAE9; }
+table.phases tbody tr { background: var(--row); }
+table.phases tbody tr:nth-child(2n) { background: var(--row2); }
+table.phases td.tbd { background: var(--surface); color: var(--muted); font-style: italic; border-left: 2px dashed var(--line); border-right: 2px dashed var(--line); }
+table.phases tbody th { font-family: var(--font-display); font-size: 12.5px; font-weight: 700; color: var(--muted); letter-spacing: 0.08em; text-transform: uppercase; width: 16%; padding-top: 15px; }
+table.phases td { width: 28%; }
+.gallery { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px; margin-top: 48px; }
+.gallery figure img { width: 100%; height: auto; aspect-ratio: 1 / 1; object-fit: cover; border-radius: 3px; background: var(--photo-bg); display: block; }
+.gallery figcaption { font-size: 13.5px; }
+.wide-fig { margin: 48px auto 0; max-width: 900px; background: #FFFFFF; border-radius: 4px; padding: 14px; border: 1px solid var(--line); }
+.wide-fig img { display: block; width: 100%; height: auto; }
+.wide-fig figcaption { color: #555555; }
+
+/* ---------- Lo que viene: mosaicos índigo, como los grupos del sitio del IAR ---------- */
+.roadmap { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 20px; }
+.stage { padding: 26px 24px 28px; display: flex; flex-direction: column; gap: 10px; min-width: 0; color: #E8EAF6; background: #404A8A; border: 1px solid rgba(255, 255, 255, 0.06); }
+.stage:nth-child(2) { background: #2C3577; }
+.stage:nth-child(3) { background: #1A237E; }
+.stage .big { font-family: var(--font-display); font-weight: 700; font-size: clamp(44px, 5vw, 60px); line-height: 1; color: #FFFFFF; }
+.stage .big small { font-size: 0.32em; font-weight: 700; margin-left: 8px; color: #C5CAE9; letter-spacing: 0.08em; text-transform: uppercase; }
+.stage p { font-size: 15.5px; line-height: 1.65; }
+.stage .when { font-family: var(--font-display); font-weight: 700; font-size: 12.5px; color: #C5CAE9; letter-spacing: 0.14em; text-transform: uppercase; }
+.science { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 28px; margin: 56px 0 0; padding: 0; list-style: none; text-align: center; }
+.science li { font-size: 15px; line-height: 1.65; }
+.science li b { font-family: var(--font-display); display: block; font-size: 18px; font-weight: 600; color: var(--head); margin-bottom: 8px; }
+.science li b::before { content: ""; display: block; width: 40px; height: 3px; background: var(--signal); margin: 0 auto 14px; }
+
+/* ---------- El sitio ---------- */
+.site-grid { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr); gap: clamp(28px, 5vw, 64px); align-items: start; }
+.site-photos { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
+.site-photos img { width: 100%; height: auto; aspect-ratio: 1 / 1; object-fit: cover; border-radius: 3px; background: var(--photo-bg); display: block; }
+.facts { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; }
+.facts li { display: grid; grid-template-columns: 150px minmax(0, 1fr); gap: 16px; padding: 12px 0; border-bottom: 1px solid var(--line); font-size: 15.5px; }
+.facts li span { font-family: var(--font-display); font-weight: 700; font-size: 12.5px; color: var(--muted); letter-spacing: 0.08em; text-transform: uppercase; padding-top: 3px; }
+
+/* ---------- Visor de fotos: cada foto se abre más grande con un clic ---------- */
+img.zoomable { cursor: zoom-in; }
+img.zoomable:focus-visible { outline: 3px solid var(--hover); outline-offset: 3px; }
+dialog.lightbox { padding: 0; border: 0; background: transparent; overflow: visible; max-width: 94vw; max-height: 94vh; }
+dialog.lightbox::backdrop { background: rgba(5, 8, 20, 0.88); }
+.lightbox figure { display: flex; flex-direction: column; gap: 10px; align-items: center; }
+.lightbox img { display: block; max-width: min(94vw, 1200px); max-height: 80vh; width: auto; height: auto; border-radius: 3px; background: #FFFFFF; cursor: zoom-out; }
+.lightbox figcaption { color: #E3E5EE; font-size: 15px; line-height: 1.45; max-width: 80ch; margin: 0; text-align: center; }
+.lb-close {
+  position: absolute; top: 10px; right: 10px; width: 40px; height: 40px; border-radius: 999px; border: 0; cursor: pointer;
+  background: rgba(10, 14, 30, 0.8); color: #FFFFFF; font-size: 24px; line-height: 1;
+}
+
+/* ---------- Pie: como el del sitio del IAR ---------- */
+.site-footer { background: #000000; color: #BDBDBD; }
+.foot-main { padding-block: 56px; }
+.foot-grid { display: grid; grid-template-columns: 200px minmax(0, 1fr) 200px; gap: 40px; align-items: start; }
+.foot-logos { display: flex; flex-direction: column; gap: 26px; align-items: flex-start; }
+.foot-logos img { display: block; width: 120px; height: auto; }
+.foot-src { display: flex; flex-direction: column; gap: 12px; }
+.foot-src .eyebrow { color: #FFFFFF; }
+.foot-src p { font-size: 14px; line-height: 1.65; max-width: 80ch; }
+.foot-src .mono { font-size: 12.5px; color: #9E9E9E; }
+.foot-src a { color: #FFFFFF; font-weight: 600; text-decoration: none; }
+.foot-src a:hover { color: #4FC3F7; }
+.foot-iar { display: flex; justify-content: flex-end; }
+.foot-iar img { display: block; width: 150px; height: auto; }
+.foot-bar { background: #222222; padding-block: 22px; text-align: center; font-size: 13.5px; color: #BDBDBD; }
+
+@media (max-width: 920px) {
+  .two, .site-grid { grid-template-columns: minmax(0, 1fr); }
+  .site-photos { max-width: 560px; }
+  .steps { grid-template-columns: minmax(0, 1fr); }
+  .roadmap { grid-template-columns: minmax(0, 1fr); }
+  .science { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .foot-grid { grid-template-columns: minmax(0, 1fr); gap: 32px; }
+  .foot-logos { flex-direction: row; flex-wrap: wrap; align-items: center; gap: 20px 28px; }
+  .foot-logos img { width: 96px; }
+  .foot-iar { justify-content: flex-start; }
+}
+@media (max-width: 760px) {
+  .topnav-in { flex-wrap: wrap; min-height: 0; padding-top: 10px; gap: 4px 12px; }
+  .brand img { height: 38px; }
+  .lang { margin-left: auto; }
+  .navlinks { order: 3; flex-basis: 100%; }
+  .navlinks li:first-child { margin-left: 0; }
+  .navlinks a { padding: 8px 10px 10px; }
+  main section { scroll-margin-top: 112px; }
+}
+@media (max-width: 600px) {
+  body { font-size: 15.5px; }
+  .lede { font-size: 17px; }
+  .specs { grid-template-columns: repeat(2, minmax(0, 1fr)); row-gap: 20px; }
+  .step { grid-template-columns: 96px minmax(0, 1fr); column-gap: 14px; }
+  .gallery { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .readouts { grid-template-columns: minmax(0, 1fr); }
+  .science { grid-template-columns: minmax(0, 1fr); }
+  .facts li { grid-template-columns: minmax(0, 1fr); gap: 2px; }
+}
+@media (prefers-reduced-motion: reduce) { * { scroll-behavior: auto !important; transition: none !important; } }
+</style>
+</head>
+<body>
+<nav class="topnav" aria-label="Secciones" data-i18n-aria="nav.aria">
+  <div class="wrap topnav-in">
+    <a class="brand" href="#top"><img src="img/logo-iar.png" alt="IAR · Instituto Argentino de Radioastronomía" width="508" height="120"></a>
+    <ul class="navlinks">
+      <li><a href="#idea" data-i18n="nav.idea">Idea</a></li>
+      <li><a href="#como-funciona" data-i18n="nav.how">Cómo funciona</a></li>
+      <li><a href="#del-cielo-al-dato" data-i18n="nav.pipe">Del cielo al dato</a></li>
+      <li><a href="#sintesis" data-i18n="nav.syn">Síntesis</a></li>
+      <li><a href="#fases" data-i18n="nav.ph">Fases</a></li>
+      <li><a href="#futuro" data-i18n="nav.fut">Futuro</a></li>
+      <li><a href="#sitio" data-i18n="nav.site">Sitio</a></li>
+    </ul>
+    <div class="lang" role="group" aria-label="Idioma / Language">
+      <button type="button" data-lang="es" lang="es" aria-pressed="true" title="Español">ES</button>
+      <button type="button" data-lang="en" lang="en" aria-pressed="false" title="English">EN</button>
+    </div>
+  </div>
+</nav>
+
+<header class="hero" id="top">
+  <div class="hero-banner">
+    <img src="img/disco.jpg" data-cap="heroCap" data-i18n-alt="alt.disco" alt="Reflector parabólico de malla de 5 metros de MIA, montado sobre un soporte de prueba en un campo verde bajo cielo azul" width="1200" height="1600">
+    <div class="wrap hero-in">
+      <p class="hero-kicker" data-i18n="hero.eyebrow">Instituto Argentino de Radioastronomía · CONICET · CIC · UNLP</p>
+      <h1>MIA Pathfinder <span data-i18n="hero.sub">tres antenas, un radiotelescopio</span></h1>
+    </div>
+    <span class="tag" data-i18n="hero.tag">MIA · 13/09/2023</span>
+  </div>
+  <div class="wrap">
+    <p class="hero-cap" id="heroCap" data-i18n="hero.cap">Reflector de 5 m sobre su soporte de prueba en el predio del IAR. La distancia focal de diseño es 2,165 m (f/D = 0,433).</p>
+  </div>
+  <div class="wrap hero-body">
+      <p class="lede" data-i18n="hero.lede">Tres reflectores de 5 metros que, combinados, observan el cielo como si fueran una sola antena del tamaño de la distancia que los separa. Es el prototipo del <i>Multipurpose Interferometric Array</i> (MIA), el primer interferómetro con fines científicos de la Argentina. Es la fase 1 del programa y se construye en el predio del IAR.</p>
+      <div class="specs" role="list">
+        <div role="listitem"><b>3</b><span data-i18n="spec.ant">antenas</span></div>
+        <div role="listitem"><b>5 m</b><span data-i18n="spec.diam">de diámetro</span></div>
+        <div role="listitem"><b>1250–1500</b><span data-i18n="spec.band">MHz · fase 1</span></div>
+        <div role="listitem"><b>21 cm</b><span data-i18n="spec.hi">línea del hidrógeno</span></div>
+      </div>
+  </div>
+</header>
+
+<main>
+<section id="idea">
+  <div class="wrap">
+    <div class="sec-head">
+      <p class="eyebrow" data-i18n="idea.eyebrow">La idea</p>
+      <h2 data-i18n="idea.h2">Ver más fino sin construir una antena gigante</h2>
+    </div>
+    <div class="two">
+    <div class="prose">
+      <p data-i18n="idea.p1">Un radiotelescopio distingue detalles en el cielo según el cociente entre la longitud de onda que observa y su propio tamaño. Para la línea de 21 cm del hidrógeno neutro, una antena de 5 m ve el cielo con un «píxel» de más de dos grados, cuatro veces el diámetro de la Luna llena.</p>
+      <p data-i18n="idea.p2">La interferometría combina las señales de varias antenas separadas entre sí. El conjunto resuelve detalles como lo haría una sola antena del tamaño de esa separación, llamada <b>línea de base</b>.</p>
+      <p class="formula">θ ≈ λ / D &nbsp;→&nbsp; θ ≈ λ / B</p>
+      <p class="muted" data-i18n="idea.vars">θ es la resolución angular, λ la longitud de onda, D el diámetro de una antena y B la línea de base entre dos antenas.</p>
+    </div>
+    <div class="chart-box">
+      <h3 data-i18n="res.h3">Resolución a 1420 MHz</h3>
+      <p class="note" data-i18n="res.note1">Escala logarítmica, estimación λ/B. Cada división es un factor 10.</p>
+      <svg class="res-chart" id="resChart" viewBox="0 0 560 330" width="100%" role="img" data-i18n-aria="res.aria" aria-label="Comparación de resolución angular a 1420 MHz: antena de 5 metros 2,4 grados; antenas de 30 metros del IAR 24 minutos de arco; Pathfinder con 100 metros de línea de base 7,3 minutos de arco; MIA en la fase 2 con 55 kilómetros 0,8 segundos de arco."></svg>
+      <p class="note" style="margin-top:8px" data-i18n="res.note2">Barras más cortas significan detalles más finos. Las antenas del IAR de 30 m resuelven unos 30′ con iluminación real; el haz simulado de MIA es de 2,6°.</p>
+    </div>
+    </div>
+  </div>
+</section>
+
+<section id="como-funciona" class="band">
+  <div class="wrap">
+    <div class="sec-head">
+      <p class="eyebrow" data-i18n="how.eyebrow">Cómo funciona</p>
+      <h2 data-i18n="how.h2">Tres antenas, demoras y unas franjas</h2>
+    </div>
+    <div class="two">
+      <div class="prose">
+        <p data-i18n="how.p1">Una fuente de radio lejana envía frentes de onda planos. Si la fuente no está justo arriba, el frente llega a cada antena en un momento distinto. Entre dos antenas separadas una distancia B, el camino extra es <span class="mono">B·sen θ</span> y produce una demora geométrica <span class="mono">τ = B·sen θ / c</span>.</p>
+        <p data-i18n="how.p2">Con tres antenas hay tres pares, MIA I–MIA II, MIA II–MIA III y MIA I–MIA III, y por lo tanto tres demoras. El <b>correlador</b> multiplica las señales de cada par y promedia el resultado. Como las demoras cambian a medida que la Tierra rota y la fuente se desplaza por el cielo, la salida de cada par oscila: son las <b>franjas de interferencia</b>.</p>
+        <p data-i18n="how.p3">La separación entre franjas, λ/B, es la resolución de cada par: el par más separado da las franjas más finas. Cada par mide una componente de Fourier del brillo del cielo, llamada <b>visibilidad</b>; tres antenas miden tres visibilidades a la vez.</p>
+      </div>
+      <figure>
+        <svg class="geo" viewBox="0 0 520 390" width="100%" role="img" data-i18n-aria="geo.aria" aria-label="Diagrama: tres antenas en línea, MIA I, MIA II y MIA III, reciben un frente de onda inclinado un ángulo theta. El frente llega primero a MIA III; hasta MIA II la onda recorre un camino extra y hasta MIA I uno más largo. Las tres señales van a un correlador que multiplica y promedia cada par.">
+          <line class="ground" x1="10" y1="268" x2="510" y2="268"/>
+          <!-- incoming rays, one per antenna -->
+          <line class="wave" x1="128" y1="20" x2="70" y2="200"/>
+          <line class="wave" x1="268" y1="20" x2="210" y2="200"/>
+          <line class="wave" x1="508" y1="20" x2="450" y2="200"/>
+          <!-- wavefront perpendicular to the rays, touching MIA III -->
+          <line class="wavefront" x1="40" y1="68" x2="480" y2="210"/>
+          <text class="t sky" x="300" y="130" data-i18n="geo.front">frente de onda</text>
+          <text class="t sky" x="470" y="56">θ</text>
+          <!-- extra paths relative to MIA III -->
+          <line class="extra" x1="105.7" y1="89.1" x2="70" y2="200"/>
+          <line class="extra g" x1="232.6" y1="129.9" x2="210" y2="200"/>
+          <text class="t acc" x="82" y="150" text-anchor="end">τ I–III</text>
+          <text class="t grn" x="212" y="174" text-anchor="end">τ II–III</text>
+          <!-- dishes -->
+          <path class="dish" d="M30 200 Q70 240 110 200"/>
+          <line class="mast" x1="70" y1="222" x2="70" y2="268"/>
+          <path class="dish" d="M170 200 Q210 240 250 200"/>
+          <line class="mast" x1="210" y1="222" x2="210" y2="268"/>
+          <path class="dish" d="M410 200 Q450 240 490 200"/>
+          <line class="mast" x1="450" y1="222" x2="450" y2="268"/>
+          <text class="t mut" x="76" y="258">MIA I</text>
+          <text class="t mut" x="216" y="258">MIA II</text>
+          <text class="t mut" x="456" y="258">MIA III</text>
+          <!-- baselines -->
+          <line class="dim s" x1="70" y1="286" x2="210" y2="286"/>
+          <line class="dim g" x1="210" y1="286" x2="450" y2="286"/>
+          <line class="dim s" x1="70" y1="280" x2="70" y2="292"/>
+          <line class="dim s" x1="208" y1="280" x2="208" y2="292"/>
+          <line class="dim g" x1="212" y1="280" x2="212" y2="292"/>
+          <line class="dim g" x1="450" y1="280" x2="450" y2="292"/>
+          <text class="t sky" x="140" y="306" text-anchor="middle">B I–II</text>
+          <text class="t grn" x="330" y="306" text-anchor="middle">B II–III</text>
+          <!-- cables to the correlator -->
+          <path class="cable" d="M70 268 L70 342 L228 342"/>
+          <path class="cable" d="M210 292 L210 332 L228 332"/>
+          <path class="cable" d="M450 268 L450 342 L306 342"/>
+          <rect class="box" x="228" y="318" width="78" height="40" rx="4"/>
+          <text class="t" x="244" y="343">× ⟨ ⟩</text>
+          <text class="t mut" x="267" y="380" text-anchor="middle" data-i18n="geo.corr">correlador · 3 pares</text>
+        </svg>
+        <figcaption data-i18n="geo.cap">El frente de onda llega primero a MIA III, después a MIA II y por último a MIA I. Los tramos de color son los caminos extra respecto de MIA III; la demora del par I–II es la diferencia entre los dos. La línea de base I–III es la suma B I–II + B II–III.</figcaption>
+      </figure>
+    </div>
+
+    <div class="instrument" style="margin-top:44px" id="fringeInstrument">
+      <div class="controls">
+        <div class="control">
+          <label for="b12" data-i18n="fr.b12">Distancia MIA I – MIA II</label>
+          <input type="range" id="b12" min="10" max="100" step="1" value="60">
+          <output id="b12Out" for="b12">60 m</output>
+        </div>
+        <div class="control">
+          <label for="b23" data-i18n="fr.b23">Distancia MIA II – MIA III</label>
+          <input type="range" id="b23" min="10" max="100" step="1" value="40">
+          <output id="b23Out" for="b23">40 m</output>
+        </div>
+        <div class="control">
+          <label for="freq" data-i18n="fr.f">Frecuencia</label>
+          <input type="range" id="freq" min="1250" max="1500" step="1" value="1420">
+          <output id="freqOut" for="freq">1420 MHz</output>
+        </div>
+        <button class="btn" id="playBtn" type="button" aria-pressed="false">Pausar el tránsito</button>
+      </div>
+      <canvas id="fringeCanvas" height="420" data-i18n-aria="fr.aria" aria-label="Salida del correlador de los tres pares de antenas en función del ángulo: tres franjas de interferencia, una por par, dentro del haz de una antena de 5 metros, con una fuente que cruza el haz." role="img"></canvas>
+      <div class="readouts">
+        <div class="readout k12"><span data-i18n="fr.r1">Franjas I–II · λ/B</span><b id="r12">–</b></div>
+        <div class="readout k23"><span data-i18n="fr.r2">Franjas II–III · λ/B</span><b id="r23">–</b></div>
+        <div class="readout k13"><span data-i18n="fr.r3">Franjas I–III · λ/B</span><b id="r13">–</b></div>
+      </div>
+      <p class="note" data-i18n="fr.note">Cada franja es la salida del correlador de un par para una fuente puntual en cada ángulo; la línea punteada es el haz de una antena (2,6° a −3 dB, según la simulación). El par más separado, I–III, da las franjas más finas. La línea vertical marca una fuente que cruza el cenit del IAR (latitud −34,9°), arrastrada por la rotación terrestre a 12,3° por hora: tarda unos 13 minutos en atravesar el haz.</p>
+    </div>
+  </div>
+</section>
+
+<section id="del-cielo-al-dato">
+  <div class="wrap">
+    <div class="sec-head">
+      <p class="eyebrow" data-i18n="pipe.eyebrow">Del cielo al dato · fase 1</p>
+      <h2 data-i18n="pipe.h2">Seis pasos para cada antena</h2>
+      <p class="lede" data-i18n="pipe.lede">Este es el recorrido de la señal en la configuración actual del Pathfinder. Cada antena recibe dos polarizaciones lineales y las lleva por fibra óptica hasta la sala de control.</p>
+    </div>
+    <ol class="steps" style="list-style:none;padding:0;margin:0">
+      <li class="step">
+        <figure><img src="img/vivaldi.jpg" data-i18n-alt="alt.vivaldi" alt="Dos antenas Vivaldi impresas en placa verde, montadas en cruz sobre soportes circulares" loading="lazy" width="1200" height="900"></figure>
+        <p class="num" data-i18n="s1.num">01 · CAPTAR</p>
+        <h3 data-i18n="s1.h3">Reflector e iluminador</h3>
+        <p data-i18n="s1.p">El reflector concentra la radiación en su foco, donde dos antenas Vivaldi cruzadas reciben las polarizaciones horizontal y vertical.</p>
+        <p class="parts" data-i18n="s1.parts">Reflector de 5 m · f/D 0,433 · Vivaldi doble en FR4</p>
+      </li>
+      <li class="step">
+        <figure><img src="img/cadena-rf.jpg" data-i18n-alt="alt.cadena" alt="Placas de amplificadores de bajo ruido conectadas en cascada con cables coaxiales sobre una mesa de laboratorio" loading="lazy" width="900" height="1200"></figure>
+        <p class="num" data-i18n="s2.num">02 · AMPLIFICAR Y FILTRAR</p>
+        <h3 data-i18n="s2.h3">Cadena de RF</h3>
+        <p data-i18n="s2.p">La primera etapa fija el ruido del receptor. La segunda amplifica y deja pasar solo la banda de 1250 a 1500 MHz, que contiene la línea de 21 cm.</p>
+        <p class="parts" data-i18n="s2.parts">PGA-103+ (≈ 49–55 K) · ERA-3 · filtro CBP-1450F+</p>
+      </li>
+      <li class="step">
+        <figure><img src="img/frontend.jpg" data-i18n-alt="alt.frontend" alt="Front-End armado dentro de su estructura cilíndrica, con fibras ópticas amarillas y cajas de aluminio" loading="lazy" width="900" height="1200"></figure>
+        <p class="num" data-i18n="s3.num">03 · TRANSPORTAR</p>
+        <h3 data-i18n="s3.h3">RF sobre fibra</h3>
+        <p data-i18n="s3.p">La señal de radio modula un láser y viaja por fibra óptica hasta la sala de control, sin las pérdidas de un cable coaxial largo.</p>
+        <p class="parts" data-i18n="s3.parts">RFoF · calibración con diodo de ruido NC3203-A</p>
+      </li>
+      <li class="step">
+        <figure><img src="img/snap.jpg" data-i18n-alt="alt.snap" alt="Placa digitalizadora SNAP con FPGA y cables coaxiales azules, dentro de un gabinete de rack" loading="lazy" width="900" height="1200"></figure>
+        <p class="num" data-i18n="s4.num">04 · DIGITALIZAR</p>
+        <h3 data-i18n="s4.h3">Muestreo directo</h3>
+        <p data-i18n="s4.p">La placa SNAP muestrea a 800 millones de muestras por segundo. La banda de 1250–1500 MHz cae en la cuarta zona de Nyquist (1200–1600 MHz), así que se digitaliza sin convertir la frecuencia.</p>
+        <p class="parts" data-i18n="s4.parts">SNAP (CASPER) · ADC HMCAD1511 · FPGA Kintex-7</p>
+      </li>
+      <li class="step">
+        <figure><img src="img/backend.jpg" data-i18n-alt="alt.backend" alt="Gabinete del Back-End digital abierto, con la placa SNAP y la fuente de alimentación" loading="lazy" width="900" height="1200"></figure>
+        <p class="num" data-i18n="s5.num">05 · CORRELACIONAR</p>
+        <h3 data-i18n="s5.h3">Correlador FX</h3>
+        <p data-i18n="s5.p">Un banco de filtros polifásico y una FFT separan la banda en canales. Después se multiplican y promedian las señales de cada par de antenas.</p>
+        <p class="parts" data-i18n="s5.parts">1024 canales de 0,39 MHz · salida por Ethernet 10 Gb/s</p>
+      </li>
+      <li class="step">
+        <figure><img src="img/telemetria.jpg" data-i18n-alt="alt.telemetria" alt="Monitor con la página web de telemetría de MIA: gráficos de temperatura y humedad e indicadores" loading="lazy" width="900" height="1200"></figure>
+        <p class="num" data-i18n="s6.num">06 · APUNTAR Y CUIDAR</p>
+        <h3 data-i18n="s6.h3">Control y telemetría</h3>
+        <p data-i18n="s6.p">Cada antena sigue la fuente en azimut y elevación y reporta su estado. Si el viento supera 45 km/h, se detiene y se estaciona mirando al cenit.</p>
+        <p class="parts" data-i18n="s6.parts">Azimut 0–360° · elevación 0–90° · RP2040 + BeagleBone Black</p>
+      </li>
+    </ol>
+
+    <div class="chain-scroll" role="region" data-i18n-aria="chain.region" aria-label="Diagrama de la cadena de señal (desplazable)" tabindex="0">
+      <svg class="chain" viewBox="0 0 1100 250" role="img" data-i18n-aria="chain.aria" aria-label="Cadena de señal de fase 1: antena Vivaldi con acoplador de calibración, amplificador PGA-103+, amplificador ERA-3 con filtro de 1250 a 1500 megahertz, transmisor de RF sobre fibra; fibra óptica hasta la sala de control; receptor de fibra, placa SNAP con ADC a 800 megamuestras por segundo y FPGA con banco de filtros, FFT y multiplicación, y computadora de adquisición por Ethernet de 10 gigabits.">
+        <rect class="zone" x="10" y="20" width="560" height="200" rx="8"/>
+        <text class="tz" x="24" y="42" data-i18n="chain.z1">FOCO DE LA ANTENA · FRONT-END</text>
+        <rect class="zone" x="660" y="20" width="430" height="200" rx="8"/>
+        <text class="tz" x="674" y="42" data-i18n="chain.z2">SALA DE CONTROL</text>
+        <rect class="blk" x="30" y="90" width="100" height="64" rx="6"/>
+        <text class="t" x="44" y="118">Vivaldi</text><text class="ts" x="44" y="138" data-i18n="chain.coupler">+ acoplador</text>
+        <rect class="blk acc" x="160" y="90" width="100" height="64" rx="6"/>
+        <text class="t" x="174" y="118">PGA-103+</text><text class="ts" x="174" y="138" data-i18n="chain.stage1">1.ª etapa</text>
+        <rect class="blk" x="290" y="90" width="120" height="64" rx="6"/>
+        <text class="t" x="304" y="118" data-i18n="chain.era">ERA-3 + filtro</text><text class="ts" x="304" y="138">1250–1500 MHz</text>
+        <rect class="blk" x="440" y="90" width="110" height="64" rx="6"/>
+        <text class="t" x="454" y="118">RFoF Tx</text><text class="ts" x="454" y="138" data-i18n="chain.laser">láser</text>
+        <rect class="blk" x="40" y="176" width="90" height="34" rx="6"/>
+        <text class="ts" x="52" y="198" data-i18n="chain.diode">diodo ruido</text>
+        <path class="ln" d="M85 176 L85 154"/>
+        <path class="ln" d="M130 122 L160 122"/><path class="ln" d="M260 122 L290 122"/><path class="ln" d="M410 122 L440 122"/>
+        <path class="fiber" d="M550 122 L680 122"/>
+        <text class="ts" x="568" y="110" data-i18n="chain.fiber">fibra óptica</text>
+        <rect class="blk" x="680" y="90" width="90" height="64" rx="6"/>
+        <text class="t" x="694" y="118">RFoF Rx</text><text class="ts" x="694" y="138" data-i18n="chain.pd">fotodiodo</text>
+        <rect class="blk acc" x="800" y="70" width="150" height="104" rx="6"/>
+        <text class="t" x="814" y="96">SNAP</text>
+        <text class="ts" x="814" y="118">ADC 800 MS/s</text>
+        <text class="ts" x="814" y="136">PFB + FFT</text>
+        <text class="ts" x="814" y="154" data-i18n="chain.mac">× y promedio</text>
+        <rect class="blk" x="980" y="90" width="96" height="64" rx="6"/>
+        <text class="t" x="994" y="118">PC</text><text class="ts" x="994" y="138" data-i18n="chain.acq">adquisición</text>
+        <path class="ln" d="M770 122 L800 122"/><path class="ln" d="M950 122 L980 122"/>
+        <text class="ts" x="948" y="190">10 GbE</text>
+        <text class="ts" x="800" y="206" data-i18n="chain.ref">referencia 10 MHz · PPS</text>
+      </svg>
+    </div>
+    <p class="note" style="margin-top:10px" data-i18n="pipe.note">En fase 1 no hay conversión de frecuencia ni control de temperatura en el Front-End. Cada antena tiene dos cadenas iguales, una por polarización.</p>
+  </div>
+</section>
+
+<section id="sintesis" class="band">
+  <div class="wrap">
+    <div class="sec-head">
+      <p class="eyebrow" data-i18n="syn.eyebrow">Síntesis de apertura</p>
+      <h2 data-i18n="syn.h2">Tres antenas, tres pares, y la Tierra que gira</h2>
+    </div>
+    <div class="two">
+      <div class="prose">
+        <p data-i18n="syn.p1">Con N antenas hay N(N−1)/2 pares. Tres antenas forman tres líneas de base, y cada una mide una visibilidad en un punto del <b>plano (u, v)</b>: la línea de base vista desde la fuente, medida en longitudes de onda.</p>
+        <p data-i18n="syn.p2">Mientras la Tierra rota, cada línea de base cambia de orientación respecto de la fuente y recorre una elipse en ese plano. Cuanto más cubierto está el plano, mejor es la imagen. Esta técnica, la síntesis de apertura por rotación terrestre, es la que usan los grandes interferómetros.</p>
+        <p class="note" data-i18n="syn.note">Las posiciones de las antenas de este gráfico son ilustrativas, con separaciones entre 20 y 100 m. Las coordenadas de MIA I, MIA II y MIA III todavía se están definiendo.</p>
+      </div>
+      <div class="instrument">
+        <div class="control" style="min-width:0">
+          <label id="decLabel" data-i18n="syn.dec">Declinación de la fuente</label>
+          <div class="seg" role="radiogroup" aria-labelledby="decLabel">
+            <input type="radio" name="dec" id="dec35" value="-35" checked><label for="dec35" data-i18n="syn.d35">−35° (pasa por el cenit)</label>
+            <input type="radio" name="dec" id="dec60" value="-60"><label for="dec60">−60°</label>
+            <input type="radio" name="dec" id="dec10" value="-10"><label for="dec10">−10°</label>
+          </div>
+        </div>
+        <canvas id="uvCanvas" height="440" role="img" data-i18n-aria="syn.aria" aria-label="Cobertura del plano u v de las tres líneas de base del Pathfinder a lo largo del día, para la declinación elegida."></canvas>
+        <div class="legend">
+          <span><i style="background:var(--sky)"></i>MIA I – MIA II</span>
+          <span><i style="background:var(--signal)"></i>MIA I – MIA III</span>
+          <span><i style="background:var(--grass)"></i>MIA II – MIA III</span>
+        </div>
+        <p class="note" id="uvNote" data-i18n="syn.uvnote">Trazos mientras la fuente está a más de 15° de elevación. Unidades: longitudes de onda a 1420 MHz.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="fases">
+  <div class="wrap">
+    <div class="sec-head">
+      <p class="eyebrow" data-i18n="ph.eyebrow">El programa MIA en tres fases</p>
+      <h2 data-i18n="ph.h2">Probar con tres, crecer a dieciséis, salir del IAR</h2>
+      <p class="lede" data-i18n="ph.lede">La fase 1 es el prototipo de tres antenas, ya en marcha en el predio del IAR. La fase 1-B amplía el arreglo a 16 antenas en el mismo predio. La fase 2 lleva las 16 antenas a nodos fuera del IAR, con la banda completa del iluminador y líneas de base de hasta 55 km. Cada fase tiene su Master Design Report.</p>
+    </div>
+    <div class="table-scroll">
+      <table class="phases">
+        <thead><tr><th scope="col"><span class="eyebrow" data-i18n="ph.sys">Sistema</span></th><th scope="col" data-i18n="ph.f1">Fase 1 · en curso</th><th scope="col" class="p1b" data-i18n="ph.f1b">Fase 1-B</th><th scope="col" class="p2" data-i18n="ph.f2">Fase 2</th></tr></thead>
+        <tbody>
+          <tr><th scope="row" data-i18n="ph.r0">Antenas</th><td data-i18n="ph.r0a">3 reflectores de 5 m: MIA I, MIA II y MIA III</td><td data-i18n="ph.r0b">16: las 3 de la fase 1 y 13 más</td><td data-i18n="ph.r0c">16, en cinco nodos de tres antenas y uno de una</td></tr>
+          <tr><th scope="row" data-i18n="ph.rl">Lugar</th><td data-i18n="ph.rla">Predio del IAR; separaciones de decenas de metros</td><td data-i18n="ph.rlb">Predio del IAR</td><td data-i18n="ph.rlc">Fuera del IAR, sitio a definir; líneas de base de hasta 55 km</td></tr>
+          <tr><th scope="row" data-i18n="ph.r1">Montura</th><td data-i18n="ph.r1a">Alt-azimutal: azimut 0–360°, elevación 0–90°</td><td data-i18n="ph.same">Igual</td><td data-i18n="ph.same">Igual</td></tr>
+          <tr><th scope="row" data-i18n="ph.r2">Banda de RF</th><td data-i18n="ph.r2a"><span class="mono">1250–1500 MHz</span>, definida por el filtro</td><td class="tbd" rowspan="5" data-i18n="ph.tbd">Configuración a definir en el Master Design Report de la fase 1-B</td><td data-i18n="ph.r2b"><span class="mono">1000–2300 MHz</span>, la banda completa del iluminador</td></tr>
+          <tr><th scope="row" data-i18n="ph.r3">Primera etapa</th><td data-i18n="ph.r3a">PGA-103+, temperatura de ruido <span style="white-space:nowrap">≈ 49–55 K</span> en la banda</td><td data-i18n="ph.r3b">uLNA SKY67151, ≈ 17–24 K; requisito del receptor: 45 K</td></tr>
+          <tr><th scope="row" data-i18n="ph.r4">Control térmico</th><td data-i18n="ph.r4a">Sin control de temperatura</td><td data-i18n="ph.r4b">A evaluar a partir de los ensayos con celdas Peltier</td></tr>
+          <tr><th scope="row" data-i18n="ph.r5">Digitalización</th><td data-i18n="ph.r5a">3 entradas a 800 MS/s, muestreo directo en zona de Nyquist</td><td data-i18n="ph.r5b">6 entradas por nodo (3 antenas × 2 polarizaciones) a 500 MS/s</td></tr>
+          <tr><th scope="row" data-i18n="ph.r6">Canales</th><td data-i18n="ph.r6a">1024 canales de 0,39 MHz</td><td data-i18n="ph.r6b">256 canales para transitorios y 16 384 para líneas espectrales</td></tr>
+          <tr><th scope="row" data-i18n="ph.r7">Viento</th><td data-i18n="ph.r7a">Estacionamiento al cenit con más de 45&nbsp;km/h</td><td data-i18n="ph.same">Igual</td><td data-i18n="ph.r7b">Igual; supervivencia a 165 km/h</td></tr>
+          <tr><th scope="row" data-i18n="ph.r8">Documento</th><td data-i18n="ph.r8a"><span class="mono">000140-DS</span>, borrador R00</td><td data-i18n="ph.r8b"><span class="mono">000150-DS</span>, en preparación</td><td data-i18n="ph.r8c"><span class="mono">000130-DS</span> R02, en preparación</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="note" style="margin-top:12px" data-i18n="ph.note">Fases 1 y 2: decisiones de configuración del 06/11/2026. Los códigos son de la serie IAR-OBS-MIAPF; los requisitos de las tres fases se reúnen en la matriz 000160-RQ, en preparación.</p>
+
+    <div class="gallery">
+      <figure><img src="img/lna.jpg" data-i18n-alt="alt.lna" alt="Placa de amplificador de bajo ruido con conectores SMA" loading="lazy" width="900" height="1200"><figcaption data-i18n="gal.lna">Placa de amplificación y filtrado de la segunda etapa.</figcaption></figure>
+      <figure><img src="img/cajas-rf.jpg" data-i18n-alt="alt.cajas" alt="Dos cajas de aluminio abiertas con placas azules y fibras amarillas" loading="lazy" width="900" height="1200"><figcaption data-i18n="gal.cajas">Cajas de RF de las dos polarizaciones, con la salida por fibra.</figcaption></figure>
+      <figure><img src="img/frontend-tubo.jpg" data-i18n-alt="alt.tubo" alt="Estructura del Front-End con las antenas Vivaldi en la base y la electrónica arriba" loading="lazy" width="900" height="1200"><figcaption data-i18n="gal.tubo">Front-End completo: las Vivaldi abajo, la electrónica arriba, dentro del radomo.</figcaption></figure>
+      <figure><img src="img/montura.jpg" data-i18n-alt="alt.montura" alt="Reflector de MIA visto de cerca sobre su soporte de prueba de caños metálicos" loading="lazy" width="900" height="1200"><figcaption data-i18n="gal.montura">Reflector y montura en el soporte de prueba.</figcaption></figure>
+    </div>
+
+    <figure class="wide-fig">
+      <img src="img/espectrograma.png" data-i18n-alt="alt.espec" alt="Dos espectrogramas diarios entre 1418 y 1421,5 megahertz: a la izquierda la Antena 2 del IAR muestra una traza curva de emisión de hidrógeno; a la derecha MIA muestra ruido sin una traza clara" loading="lazy" width="1214" height="461">
+      <figcaption data-i18n="gal.espec">Primeras pruebas, febrero de 2024. Espectrogramas de un día alrededor de 1420 MHz con las antenas fijas mirando al cenit: la Antena 2 del IAR (izquierda) registra el hidrógeno de la Vía Láctea; MIA (derecha) todavía no, mientras se ajusta la posición del iluminador respecto del foco.</figcaption>
+    </figure>
+  </div>
+</section>
+
+<section id="futuro" class="band">
+  <div class="wrap">
+    <div class="sec-head">
+      <p class="eyebrow" data-i18n="fut.eyebrow">Lo que viene</p>
+      <h2 data-i18n="fut.h2">De tres antenas a un instrumento de 55 km</h2>
+    </div>
+    <div class="roadmap">
+      <div class="stage">
+        <p class="when" data-i18n="fut.w1">Fase 1 · predio del IAR</p>
+        <p class="big">3<small data-i18n="fut.ant">antenas</small></p>
+        <p data-i18n="fut.p1">MIA Pathfinder: un nodo de tres antenas separadas por decenas de metros. Resolución del orden de 7′ con 100 m de línea de base. Valida receptores, control, digitalización y correlación.</p>
+      </div>
+      <div class="stage">
+        <p class="when" data-i18n="fut.w2">Fase 1-B · predio del IAR</p>
+        <p class="big">16<small data-i18n="fut.ant">antenas</small></p>
+        <p data-i18n="fut.p2">Trece antenas más en el mismo predio. Dieciséis antenas forman 120 pares, los mismos que tendrá el arreglo de la fase 2.</p>
+      </div>
+      <div class="stage">
+        <p class="when" data-i18n="fut.w3">Fase 2 · fuera del IAR</p>
+        <p class="big">16<small data-i18n="fut.ant">antenas</small></p>
+        <p data-i18n="fut.p3">Cinco nodos de tres antenas y uno de una, en un sitio con baja interferencia de radio todavía a definir. Líneas de base de hasta 55 km: ≈ 0,8″ a 1420 MHz, más de mil veces más fino que las antenas actuales del IAR.</p>
+      </div>
+    </div>
+    <p class="note" style="margin-top:14px" data-i18n="fut.more">Más adelante, el arreglo puede crecer: el correlador se diseña para operar hasta 64 antenas.</p>
+    <ul class="science">
+      <li data-i18n="sci.1"><b>Hidrógeno neutro</b>La línea de 21 cm para estudiar la distribución y el movimiento del gas en nuestra galaxia y en otras.</li>
+      <li data-i18n="sci.2"><b>Formación estelar</b>Jets, regiones de gas ionizado, líneas de recombinación y máseres de OH a 1665 MHz.</li>
+      <li data-i18n="sci.3"><b>Fuentes no térmicas</b>Núcleos galácticos activos, blazares y mapas de índice espectral de radiofuentes extendidas.</li>
+      <li data-i18n="sci.4"><b>Púlsares y transitorios</b>Timing de púlsares, magnetares y ráfagas rápidas de radio (FRB), con alta resolución temporal.</li>
+    </ul>
+  </div>
+</section>
+
+<section id="sitio">
+  <div class="wrap">
+    <div class="sec-head">
+      <p class="eyebrow" data-i18n="site.eyebrow">El sitio</p>
+      <h2 data-i18n="site.h2">Tres bases en el predio del IAR</h2>
+    </div>
+    <div class="site-grid">
+    <div class="prose">
+      <p data-i18n="site.p">Las tres antenas, MIA I, MIA II y MIA III, se instalan en el predio del Instituto, en el Parque Pereyra Iraola. En noviembre de 2023 se hicieron las zanjas para los caños de energía y fibra óptica, los pozos de las fundaciones y las cámaras de inspección.</p>
+      <ul class="facts">
+        <li data-i18n="site.f1"><span>Canalización</span>Caños de PVC enterrados para el tendido eléctrico y de red de cada antena.</li>
+        <li data-i18n="site.f2"><span>Puesta a tierra</span>Anillo de cobre de 50 mm² a 0,5 m de profundidad con jabalinas, resistencia objetivo de 5 Ω o menos.</li>
+        <li data-i18n="site.f3"><span>Suelo</span>Resistividad medida de 14,88 Ω·m.</li>
+        <li data-i18n="site.f4"><span>Cargas</span>Disco y contrapeso ≈ 490 kg; viento de operación de diseño 50 km/h, supervivencia 165 km/h.</li>
+      </ul>
+    </div>
+    <div class="site-photos">
+      <figure><img src="img/zanja.jpg" data-i18n-alt="alt.zanja" alt="Zanja recién excavada que cruza un campo, con una tapa de cámara de inspección al costado" loading="lazy" width="900" height="1200"><figcaption data-i18n="site.c1">Zanja para energía y fibra.</figcaption></figure>
+      <figure><img src="img/pozo.jpg" data-i18n-alt="alt.pozo" alt="Pozo circular excavado para la fundación de una antena, junto a una cámara de inspección" loading="lazy" width="750" height="1000"><figcaption data-i18n="site.c2">Pozo de fundación.</figcaption></figure>
+      <figure><img src="img/camara.jpg" data-i18n-alt="alt.camara" alt="Cámara de inspección de hormigón con tapa, colocada al borde de la zanja" loading="lazy" width="750" height="1000"><figcaption data-i18n="site.c3">Cámara de inspección.</figcaption></figure>
+    </div>
+    </div>
+  </div>
+</section>
+</main>
+
+<footer class="site-footer">
+  <div class="foot-main">
+  <div class="wrap foot-grid">
+    <div class="foot-logos">
+      <img src="img/logo-conicet.png" alt="CONICET · Consejo Nacional de Investigaciones Científicas y Técnicas" width="200" height="167" loading="lazy">
+      <img src="img/logo-cic.png" alt="CIC · Comisión de Investigaciones Científicas" width="180" height="129" loading="lazy">
+      <img src="img/logo-unlp.png" alt="Universidad Nacional de La Plata" width="212" height="99" loading="lazy">
+    </div>
+    <div class="foot-src">
+    <p class="eyebrow" data-i18n="foot.eyebrow">Fuentes</p>
+    <p data-i18n="foot.p">Master Design Report de la fase 1 (borrador), que reúne la descripción general de sistemas, el Design Report y el detalle del Back-End; plan de Master Design Reports por fase; requisitos del Front-End y diseño del uLNA; informes de ajuste del iluminador y de puesta a tierra. El esquema de fases y su configuración corresponden a las decisiones del proyecto de noviembre de 2026; los documentos están en revisión.</p>
+    <p class="mono">IAR-OBS-MIAPF-000140-DS · 000130-DS · 020205-RQ · 020210-DS · 050100-RP · 070200-DG</p>
+    <p data-i18n="foot.addr">Instituto Argentino de Radioastronomía · Camino Gral. Belgrano km 40, Berazategui, provincia de Buenos Aires, Argentina · <a href="https://www.iar.unlp.edu.ar/">www.iar.unlp.edu.ar</a></p>
+    </div>
+    <div class="foot-iar">
+      <a href="https://www.iar.unlp.edu.ar/"><img src="img/logo-iar-blanco.png" alt="IAR · sitio del Instituto Argentino de Radioastronomía" data-i18n-alt="foot.logo" width="360" height="208" loading="lazy"></a>
+    </div>
+  </div>
+  </div>
+  <div class="foot-bar">
+    <div class="wrap"><p data-i18n="foot.bar">Proyecto MIA Pathfinder · Instituto Argentino de Radioastronomía (CONICET · CIC · UNLP) · 2026</p></div>
+  </div>
+</footer>
+
+<dialog class="lightbox" id="lightbox">
+  <button type="button" class="lb-close" aria-label="Cerrar imagen" data-i18n-aria="lb.close">×</button>
+  <figure><img id="lbImg" alt=""><figcaption id="lbCap"></figcaption></figure>
+</dialog>
+
+<script>
+(function () {
+  const root = document.documentElement;
+  const css = (n) => getComputedStyle(root).getPropertyValue(n).trim();
+  const C = 299792458;
+  const DEG = Math.PI / 180;
+
+  /* ---------- Language ---------- */
+  // Spanish is the text written in the page; this table holds the English for every [data-i18n] key.
+  const EN = {
+    'nav.aria': `Sections`,
+    'nav.idea': `Idea`,
+    'nav.how': `How it works`,
+    'nav.pipe': `Sky to data`,
+    'nav.syn': `Synthesis`,
+    'nav.ph': `Phases`,
+    'nav.fut': `Future`,
+    'nav.site': `Site`,
+    'lb.close': `Close image`,
+    'hero.eyebrow': `Argentine Institute of Radio Astronomy · CONICET · CIC · UNLP`,
+    'hero.sub': `three antennas, one radio telescope`,
+    'hero.lede': `Three 5-metre reflectors that, combined, observe the sky as if they were a single antenna as large as the distance between them. It is the prototype of the <i>Multipurpose Interferometric Array</i> (MIA), the first interferometer for scientific use in Argentina. It is phase 1 of the programme and is being built on the IAR grounds.`,
+    'spec.ant': `antennas`,
+    'spec.diam': `diameter`,
+    'spec.band': `MHz · phase 1`,
+    'spec.hi': `hydrogen line`,
+    'alt.disco': `MIA's 5-metre mesh parabolic reflector on a test stand in a green field under a blue sky`,
+    'hero.tag': `MIA · 13 Sep 2023`,
+    'hero.cap': `The 5 m reflector on its test stand at the IAR grounds. The design focal length is 2.165 m (f/D = 0.433).`,
+    'idea.eyebrow': `The idea`,
+    'idea.h2': `Finer detail without building a giant antenna`,
+    'idea.p1': `A radio telescope resolves detail in the sky according to the ratio between the wavelength it observes and its own size. For the 21 cm line of neutral hydrogen, a 5 m antenna sees the sky with a “pixel” of more than two degrees, four times the diameter of the full Moon.`,
+    'idea.p2': `Interferometry combines the signals of several antennas set apart from each other. Together they resolve detail as a single antenna as large as that separation would. The separation is called the <b>baseline</b>.`,
+    'idea.vars': `θ is the angular resolution, λ the wavelength, D the diameter of one antenna and B the baseline between two antennas.`,
+    'res.h3': `Resolution at 1420 MHz`,
+    'res.note1': `Logarithmic scale, λ/B estimate. Each division is a factor of 10.`,
+    'res.aria': `Angular resolution compared at 1420 MHz: 5-metre antenna 2.4 degrees; IAR 30-metre antennas 24 arcminutes; Pathfinder with a 100-metre baseline 7.3 arcminutes; MIA in phase 2 with 55 kilometres 0.8 arcseconds.`,
+    'res.note2': `Shorter bars mean finer detail. The IAR's 30 m antennas resolve about 30′ with real illumination; MIA's simulated beam is 2.6°.`,
+    'how.eyebrow': `How it works`,
+    'how.h2': `Three antennas, delays and some fringes`,
+    'how.p1': `A distant radio source sends plane wavefronts. Unless the source is straight overhead, the wavefront reaches each antenna at a different moment. Between two antennas a distance B apart, the extra path is <span class="mono">B·sin θ</span> and produces a geometric delay <span class="mono">τ = B·sin θ / c</span>.`,
+    'how.p2': `With three antennas there are three pairs, MIA I–MIA II, MIA II–MIA III and MIA I–MIA III, and therefore three delays. The <b>correlator</b> multiplies the signals of each pair and averages the result. As the delays change while the Earth rotates and the source moves across the sky, the output of each pair oscillates: these are the <b>interference fringes</b>.`,
+    'how.p3': `The fringe spacing, λ/B, is the resolution of each pair: the most widely separated pair gives the finest fringes. Each pair measures one Fourier component of the sky brightness, called a <b>visibility</b>; three antennas measure three visibilities at once.`,
+    'geo.aria': `Diagram: three antennas in a line, MIA I, MIA II and MIA III, receive a wavefront tilted by an angle theta. The wavefront reaches MIA III first; the wave travels an extra path to MIA II and a longer one to MIA I. The three signals go to a correlator that multiplies and averages each pair.`,
+    'geo.front': `wavefront`,
+    'geo.corr': `correlator · 3 pairs`,
+    'geo.cap': `The wavefront reaches MIA III first, then MIA II and finally MIA I. The coloured segments are the extra paths relative to MIA III; the delay of the I–II pair is the difference between the two. The I–III baseline is the sum B I–II + B II–III.`,
+    'fr.b12': `Distance MIA I – MIA II`,
+    'fr.b23': `Distance MIA II – MIA III`,
+    'fr.f': `Frequency`,
+    'fr.aria': `Correlator output of the three antenna pairs versus angle: three sets of interference fringes, one per pair, inside the beam of a 5-metre antenna, with a source crossing the beam.`,
+    'fr.r1': `Fringes I–II · λ/B`,
+    'fr.r2': `Fringes II–III · λ/B`,
+    'fr.r3': `Fringes I–III · λ/B`,
+    'fr.note': `Each trace is one pair's correlator output for a point source at each angle; the dotted line is the beam of one antenna (2.6° at −3 dB, from the simulation). The most widely separated pair, I–III, gives the finest fringes. The vertical line marks a source crossing the IAR zenith (latitude −34.9°), carried by the Earth's rotation at 12.3° per hour: it takes about 13 minutes to cross the beam.`,
+    'pipe.eyebrow': `From sky to data · phase 1`,
+    'pipe.h2': `Six steps for each antenna`,
+    'pipe.lede': `This is the signal path in the Pathfinder's current configuration. Each antenna receives two linear polarizations and carries them over optical fibre to the control room.`,
+    'alt.vivaldi': `Two Vivaldi antennas printed on green circuit board, mounted crosswise on circular supports`,
+    's1.num': `01 · COLLECT`,
+    's1.h3': `Reflector and feed`,
+    's1.p': `The reflector concentrates the radiation at its focus, where two crossed Vivaldi antennas receive the horizontal and vertical polarizations.`,
+    's1.parts': `5 m reflector · f/D 0.433 · dual Vivaldi on FR4`,
+    'alt.cadena': `Low-noise amplifier boards connected in cascade with coaxial cables on a lab bench`,
+    's2.num': `02 · AMPLIFY AND FILTER`,
+    's2.h3': `RF chain`,
+    's2.p': `The first stage sets the receiver noise. The second amplifies and passes only the 1250–1500 MHz band, which contains the 21 cm line.`,
+    's2.parts': `PGA-103+ (≈ 49–55 K) · ERA-3 · CBP-1450F+ filter`,
+    'alt.frontend': `Front-End assembled inside its cylindrical structure, with yellow optical fibres and aluminium boxes`,
+    's3.num': `03 · TRANSPORT`,
+    's3.h3': `RF over fibre`,
+    's3.p': `The radio signal modulates a laser and travels over optical fibre to the control room, without the losses of a long coaxial cable.`,
+    's3.parts': `RFoF · calibration with an NC3203-A noise diode`,
+    'alt.snap': `SNAP digitizer board with FPGA and blue coaxial cables, inside a rack enclosure`,
+    's4.num': `04 · DIGITIZE`,
+    's4.h3': `Direct sampling`,
+    's4.p': `The SNAP board samples at 800 million samples per second. The 1250–1500 MHz band falls in the fourth Nyquist zone (1200–1600 MHz), so it is digitized without frequency conversion.`,
+    's4.parts': `SNAP (CASPER) · HMCAD1511 ADC · Kintex-7 FPGA`,
+    'alt.backend': `Open digital Back-End enclosure, with the SNAP board and the power supply`,
+    's5.num': `05 · CORRELATE`,
+    's5.h3': `FX correlator`,
+    's5.p': `A polyphase filter bank and an FFT split the band into channels. The signals of each antenna pair are then multiplied and averaged.`,
+    's5.parts': `1024 channels of 0.39 MHz · 10 Gb/s Ethernet output`,
+    'alt.telemetria': `Monitor showing MIA's telemetry web page: temperature and humidity plots and indicators`,
+    's6.num': `06 · POINT AND PROTECT`,
+    's6.h3': `Control and telemetry`,
+    's6.p': `Each antenna tracks the source in azimuth and elevation and reports its status. If the wind exceeds 45 km/h, it stops and stows pointing at the zenith.`,
+    's6.parts': `Azimuth 0–360° · elevation 0–90° · RP2040 + BeagleBone Black`,
+    'chain.region': `Signal chain diagram (scrollable)`,
+    'chain.aria': `Phase 1 signal chain: Vivaldi antenna with calibration coupler, PGA-103+ amplifier, ERA-3 amplifier with a 1250 to 1500 megahertz filter, RF-over-fibre transmitter; optical fibre to the control room; fibre receiver, SNAP board with an ADC at 800 megasamples per second and an FPGA with filter bank, FFT and multiplication, and acquisition computer over 10-gigabit Ethernet.`,
+    'chain.z1': `ANTENNA FOCUS · FRONT-END`,
+    'chain.z2': `CONTROL ROOM`,
+    'chain.coupler': `+ coupler`,
+    'chain.stage1': `1st stage`,
+    'chain.era': `ERA-3 + filter`,
+    'chain.laser': `laser`,
+    'chain.diode': `noise diode`,
+    'chain.fiber': `optical fibre`,
+    'chain.pd': `photodiode`,
+    'chain.mac': `× and average`,
+    'chain.acq': `acquisition`,
+    'chain.ref': `10 MHz reference · PPS`,
+    'pipe.note': `In phase 1 there is no frequency conversion and no temperature control in the Front-End. Each antenna has two identical chains, one per polarization.`,
+    'syn.eyebrow': `Aperture synthesis`,
+    'syn.h2': `Three antennas, three pairs, and a rotating Earth`,
+    'syn.p1': `With N antennas there are N(N−1)/2 pairs. Three antennas form three baselines, and each one measures a visibility at one point of the <b>(u, v) plane</b>: the baseline as seen from the source, measured in wavelengths.`,
+    'syn.p2': `As the Earth rotates, each baseline changes its orientation relative to the source and traces an ellipse in that plane. The more of the plane is covered, the better the image. This technique, Earth-rotation aperture synthesis, is the one the large interferometers use.`,
+    'syn.note': `The antenna positions in this plot are illustrative, with separations between 20 and 100 m. The coordinates of MIA I, MIA II and MIA III are still being defined.`,
+    'syn.dec': `Source declination`,
+    'syn.d35': `−35° (passes through the zenith)`,
+    'syn.aria': `uv-plane coverage of the three Pathfinder baselines over a day, for the chosen declination.`,
+    'syn.uvnote': `Tracks drawn while the source is more than 15° above the horizon. Units: wavelengths at 1420 MHz.`,
+    'ph.eyebrow': `The MIA programme in three phases`,
+    'ph.h2': `Test with three, grow to sixteen, move beyond the IAR`,
+    'ph.lede': `Phase 1 is the three-antenna prototype, already under way on the IAR grounds. Phase 1-B extends the array to 16 antennas on the same grounds. Phase 2 moves the 16 antennas to nodes outside the IAR, with the full band of the feed and baselines up to 55 km. Each phase has its own Master Design Report.`,
+    'ph.sys': `System`,
+    'ph.f1': `Phase 1 · under way`,
+    'ph.f1b': `Phase 1-B`,
+    'ph.f2': `Phase 2`,
+    'ph.r0': `Antennas`,
+    'ph.r0a': `3 reflectors of 5 m: MIA I, MIA II and MIA III`,
+    'ph.r0b': `16: the 3 from phase 1 and 13 more`,
+    'ph.r0c': `16, in five nodes of three antennas and one of a single antenna`,
+    'ph.rl': `Location`,
+    'ph.rla': `IAR grounds; separations of tens of metres`,
+    'ph.rlb': `IAR grounds`,
+    'ph.rlc': `Outside the IAR, site to be defined; baselines up to 55 km`,
+    'ph.r1': `Mount`,
+    'ph.r1a': `Alt-azimuth: azimuth 0–360°, elevation 0–90°`,
+    'ph.same': `Same`,
+    'ph.r2': `RF band`,
+    'ph.r2a': `<span class="mono">1250–1500 MHz</span>, set by the filter`,
+    'ph.tbd': `Configuration to be defined in the phase 1-B Master Design Report`,
+    'ph.r2b': `<span class="mono">1000–2300 MHz</span>, the full band of the feed`,
+    'ph.r3': `First stage`,
+    'ph.r3a': `PGA-103+, noise temperature <span style="white-space:nowrap">≈ 49–55 K</span> in the band`,
+    'ph.r3b': `uLNA SKY67151, ≈ 17–24 K; receiver requirement: 45 K`,
+    'ph.r4': `Thermal control`,
+    'ph.r4a': `No temperature control`,
+    'ph.r4b': `To be evaluated from the Peltier cell tests`,
+    'ph.r5': `Digitization`,
+    'ph.r5a': `3 inputs at 800 MS/s, direct sampling in a Nyquist zone`,
+    'ph.r5b': `6 inputs per node (3 antennas × 2 polarizations) at 500 MS/s`,
+    'ph.r6': `Channels`,
+    'ph.r6a': `1024 channels of 0.39 MHz`,
+    'ph.r6b': `256 channels for transients and 16,384 for spectral lines`,
+    'ph.r7': `Wind`,
+    'ph.r7a': `Stow at the zenith above 45&nbsp;km/h`,
+    'ph.r7b': `Same; survival at 165 km/h`,
+    'ph.r8': `Document`,
+    'ph.r8a': `<span class="mono">000140-DS</span>, draft R00`,
+    'ph.r8b': `<span class="mono">000150-DS</span>, in preparation`,
+    'ph.r8c': `<span class="mono">000130-DS</span> R02, in preparation`,
+    'ph.note': `Phases 1 and 2: configuration decisions of 6 November 2026. The codes belong to the IAR-OBS-MIAPF series; the requirements of the three phases are being gathered in the 000160-RQ matrix.`,
+    'alt.lna': `Low-noise amplifier board with SMA connectors`,
+    'gal.lna': `Second-stage amplification and filtering board.`,
+    'alt.cajas': `Two open aluminium boxes with blue boards and yellow fibres`,
+    'gal.cajas': `RF boxes for the two polarizations, with the fibre output.`,
+    'alt.tubo': `Front-End structure with the Vivaldi antennas at the base and the electronics above`,
+    'gal.tubo': `Complete Front-End: the Vivaldis below, the electronics above, inside the radome.`,
+    'alt.montura': `Close view of the MIA reflector on its test stand made of metal tubes`,
+    'gal.montura': `Reflector and mount on the test stand.`,
+    'alt.espec': `Two daily spectrograms between 1418 and 1421.5 megahertz: on the left, the IAR's Antenna 2 shows a curved trace of hydrogen emission; on the right, MIA shows noise with no clear trace`,
+    'gal.espec': `First tests, February 2024. One-day spectrograms around 1420 MHz with the antennas fixed at the zenith: the IAR's Antenna 2 (left) records the hydrogen of the Milky Way; MIA (right) does not yet, while the position of the feed relative to the focus is being adjusted.`,
+    'fut.eyebrow': `What comes next`,
+    'fut.h2': `From three antennas to a 55 km instrument`,
+    'fut.w1': `Phase 1 · IAR grounds`,
+    'fut.ant': `antennas`,
+    'fut.p1': `MIA Pathfinder: one node of three antennas, tens of metres apart. Resolution of about 7′ with a 100 m baseline. It validates the receivers, control, digitization and correlation.`,
+    'fut.w2': `Phase 1-B · IAR grounds`,
+    'fut.p2': `Thirteen more antennas on the same grounds. Sixteen antennas form 120 pairs, the same number the phase 2 array will have.`,
+    'fut.w3': `Phase 2 · outside the IAR`,
+    'fut.p3': `Five nodes of three antennas plus one single antenna, at a low-interference site still to be chosen. Baselines up to 55 km: ≈ 0.8″ at 1420 MHz, more than a thousand times finer than the IAR's current antennas.`,
+    'fut.more': `Later on the array can grow: the correlator is designed to handle up to 64 antennas.`,
+    'sci.1': `<b>Neutral hydrogen</b>The 21 cm line, to study the distribution and motion of gas in our galaxy and in others.`,
+    'sci.2': `<b>Star formation</b>Jets, ionized gas regions, recombination lines and OH masers at 1665 MHz.`,
+    'sci.3': `<b>Non-thermal sources</b>Active galactic nuclei, blazars and spectral-index maps of extended radio sources.`,
+    'sci.4': `<b>Pulsars and transients</b>Pulsar timing, magnetars and fast radio bursts (FRBs), with high time resolution.`,
+    'site.eyebrow': `The site`,
+    'site.h2': `Three bases on the IAR grounds`,
+    'site.p': `The three antennas, MIA I, MIA II and MIA III, are being installed on the Institute's grounds in Parque Pereyra Iraola. In November 2023 the trenches for the power and optical-fibre conduits, the foundation pits and the inspection chambers were dug.`,
+    'site.f1': `<span>Conduits</span>Buried PVC pipes for the power and network cabling of each antenna.`,
+    'site.f2': `<span>Grounding</span>50 mm² copper ring at 0.5 m depth with ground rods; target resistance of 5 Ω or less.`,
+    'site.f3': `<span>Soil</span>Measured resistivity of 14.88 Ω·m.`,
+    'site.f4': `<span>Loads</span>Dish and counterweight ≈ 490 kg; design operating wind 50 km/h, survival 165 km/h.`,
+    'alt.zanja': `Freshly dug trench crossing a field, with an inspection chamber lid beside it`,
+    'site.c1': `Trench for power and fibre.`,
+    'alt.pozo': `Circular pit dug for an antenna foundation, next to an inspection chamber`,
+    'site.c2': `Foundation pit.`,
+    'alt.camara': `Concrete inspection chamber with lid, at the edge of the trench`,
+    'site.c3': `Inspection chamber.`,
+    'foot.eyebrow': `Sources`,
+    'foot.p': `Phase 1 Master Design Report (draft), which brings together the general systems description, the Design Report and the Back-End details; the plan for one Master Design Report per phase; the Front-End requirements and the uLNA design; and the feed adjustment and grounding reports. The phase scheme and its configuration follow the project decisions of November 2026; the documents are under review.`,
+    'foot.addr': `Argentine Institute of Radio Astronomy · Camino Gral. Belgrano km 40, Berazategui, Buenos Aires Province, Argentina · <a href="https://www.iar.unlp.edu.ar/">www.iar.unlp.edu.ar</a>`,
+    'foot.logo': `IAR · website of the Argentine Institute of Radio Astronomy`,
+    'foot.bar': `MIA Pathfinder project · Argentine Institute of Radio Astronomy (CONICET · CIC · UNLP) · 2026`
+  };
+  // Strings built by the script itself (charts, canvas labels, button).
+  const UI = {
+    es: { pause: 'Pausar el tránsito', resume: 'Reanudar el tránsito', angle: 'ángulo respecto del centro del haz',
+          rows: ['Antena de 5 m', 'Antena de 30 m (IAR)', 'Pathfinder, B = 100 m', 'Fase 2, B = 55 km'] },
+    en: { pause: 'Pause the transit', resume: 'Resume the transit', angle: 'angle from the beam centre',
+          rows: ['5 m antenna', '30 m antenna (IAR)', 'Pathfinder, B = 100 m', 'Phase 2, B = 55 km'] }
+  };
+  let lang = 'es';
+  const ES = {};
+  const dec = (s) => (lang === 'es' ? String(s).replace('.', ',') : String(s));
+
+  function swap(el, key, read, write) {
+    if (!(key in ES)) ES[key] = read();
+    write(lang === 'en' && EN[key] != null ? EN[key] : ES[key]);
+  }
+  function applyLang(next) {
+    lang = next === 'en' ? 'en' : 'es';
+    root.lang = lang;
+    document.querySelectorAll('[data-i18n]').forEach((el) => {
+      const k = el.dataset.i18n;
+      swap(el, k, () => el.innerHTML, (v) => { el.innerHTML = v; });
+    });
+    document.querySelectorAll('[data-i18n-alt]').forEach((el) => {
+      const k = el.dataset.i18nAlt;
+      swap(el, k, () => el.getAttribute('alt'), (v) => el.setAttribute('alt', v));
+    });
+    document.querySelectorAll('[data-i18n-aria]').forEach((el) => {
+      const k = el.dataset.i18nAria;
+      swap(el, k, () => el.getAttribute('aria-label'), (v) => el.setAttribute('aria-label', v));
+    });
+    document.querySelectorAll('.lang button').forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.lang === lang)));
+    try { localStorage.setItem('miapf-lang', lang); } catch (e) {}
+  }
+  function initialLang() {
+    try { const q = new URLSearchParams(location.search).get('lang'); if (q === 'en' || q === 'es') return q; } catch (e) {}
+    try { const s = localStorage.getItem('miapf-lang'); if (s === 'en' || s === 'es') return s; } catch (e) {}
+    return 'es';
+  }
+
+  /* ---------- Resolution chart (log scale, drawn to scale) ---------- */
+  function drawResChart() {
+    const svg = document.getElementById('resChart');
+    const names = UI[lang].rows;
+    const rows = [
+      { name: names[0], size: 5, val: '2.4°' },
+      { name: names[1], size: 30, val: '24′' },
+      { name: names[2], size: 100, val: '7.3′', hl: true },
+      { name: names[3], size: 55000, val: '0.8″' }
+    ];
+    const lambda = C / 1420.4e6;
+    const arcsec = (B) => (lambda / B) / DEG * 3600;
+    const x0 = 20, x1 = 520, lo = Math.log10(0.1), hi = Math.log10(30000);
+    const X = (v) => x0 + (Math.log10(v) - lo) / (hi - lo) * (x1 - x0);
+    let out = '';
+    const ticks = [[0.1, '0.1″'], [1, '1″'], [10, '10″'], [60, '1′'], [600, '10′'], [3600, '1°'], [36000, '10°']];
+    out += `<line class="axis" x1="${x0}" y1="292" x2="${x1}" y2="292"/>`;
+    ticks.forEach(([v, l]) => {
+      if (Math.log10(v) > hi) return;
+      const x = X(v);
+      out += `<line class="axis" x1="${x}" y1="40" x2="${x}" y2="296"/>`;
+      out += `<text class="tick" x="${x}" y="316" text-anchor="middle">${dec(l)}</text>`;
+    });
+    rows.forEach((r, i) => {
+      const y = 52 + i * 60;
+      const v = arcsec(r.size);
+      const w = Math.max(2, X(v) - x0);
+      out += `<text class="lab" x="${x0}" y="${y - 8}">${r.name}</text>`;
+      out += `<rect class="bar${r.hl ? ' hl' : ''}" x="${x0}" y="${y}" width="${w.toFixed(1)}" height="20" rx="2"/>`;
+      const tx = x0 + w + 8;
+      out += `<text class="val" x="${Math.min(tx, x1 - 40).toFixed(1)}" y="${y + 15}">${dec(r.val)}</text>`;
+    });
+    svg.innerHTML = out;
+  }
+
+  /* ---------- Fringe instrument: one trace per antenna pair ---------- */
+  const fc = document.getElementById('fringeCanvas');
+  const b12In = document.getElementById('b12'), b23In = document.getElementById('b23'), fIn = document.getElementById('freq');
+  const b12Out = document.getElementById('b12Out'), b23Out = document.getElementById('b23Out'), fOut = document.getElementById('freqOut');
+  const rOut = { '12': document.getElementById('r12'), '23': document.getElementById('r23'), '13': document.getElementById('r13') };
+  const playBtn = document.getElementById('playBtn');
+  const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  let playing = !reduced, srcDeg = -3.6, last = 0;
+  const HPBW = 2.6, SPAN = 4.2;
+  const SPEED = 12.3 / 3600 * 60; // degrees per second at 60x real time
+  // Antennas on a line: MIA I – MIA II – MIA III; the I–III baseline is the sum of the other two.
+  const PAIRS3 = [
+    { id: '12', name: 'I–II', col: '--sky', B: () => +b12In.value },
+    { id: '23', name: 'II–III', col: '--grass', B: () => +b23In.value },
+    { id: '13', name: 'I–III', col: '--signal', B: () => +b12In.value + +b23In.value }
+  ];
+
+  function sizeCanvas(cv) {
+    const r = window.devicePixelRatio || 1;
+    const w = cv.clientWidth, h = Number(cv.getAttribute('height'));
+    cv.style.height = h + 'px';
+    if (cv.width !== Math.round(w * r)) { cv.width = Math.round(w * r); cv.height = Math.round(h * r); }
+    const ctx = cv.getContext('2d'); ctx.setTransform(r, 0, 0, r, 0, 0);
+    return { ctx, w, h };
+  }
+  function updateReadouts() {
+    const lambda = C / (+fIn.value * 1e6);
+    b12Out.textContent = b12In.value + ' m';
+    b23Out.textContent = b23In.value + ' m';
+    fOut.textContent = fIn.value + ' MHz';
+    PAIRS3.forEach((p) => { rOut[p.id].textContent = dec(((lambda / p.B()) / DEG * 60).toFixed(1)) + '′'; });
+  }
+  function setPlayLabel() {
+    playBtn.textContent = playing ? UI[lang].pause : UI[lang].resume;
+    playBtn.setAttribute('aria-pressed', String(!playing));
+  }
+  function drawFringe() {
+    const { ctx, w, h } = sizeCanvas(fc);
+    const lambda = C / (+fIn.value * 1e6);
+    const padL = 12, padR = 12, padT = 8, padB = 46, gap = 12;
+    const laneH = (h - padT - padB - 2 * gap) / 3;
+    const X = (d) => padL + (d + SPAN) / (2 * SPAN) * (w - padL - padR);
+    const sigma = HPBW / 2.3548;
+    const env = (d) => Math.exp(-0.5 * (d / sigma) ** 2);
+    const N = Math.max(600, Math.round(w * 2));
+    const xs = X(srcDeg);
+    ctx.clearRect(0, 0, w, h);
+    ctx.fillStyle = css('--surface'); ctx.fillRect(0, 0, w, h);
+    ctx.font = '12px "Open Sans", Arial, sans-serif';
+    // angle grid, shared by the three pairs
+    ctx.strokeStyle = css('--line'); ctx.lineWidth = 1; ctx.fillStyle = css('--muted'); ctx.textAlign = 'center';
+    for (let d = -4; d <= 4; d += 1) {
+      ctx.beginPath(); ctx.moveTo(X(d), padT); ctx.lineTo(X(d), h - padB); ctx.stroke();
+      ctx.fillText((d > 0 ? '+' : d < 0 ? '−' : '') + Math.abs(d) + '°', X(d), h - padB + 16);
+    }
+    ctx.fillText(UI[lang].angle, (padL + w - padR) / 2, h - 6);
+    // the source, crossing all three pairs at once
+    ctx.strokeStyle = css('--ink'); ctx.globalAlpha = 0.5; ctx.lineWidth = 1.2;
+    ctx.beginPath(); ctx.moveTo(xs, padT); ctx.lineTo(xs, h - padB); ctx.stroke();
+    ctx.globalAlpha = 1;
+    PAIRS3.forEach((p, k) => {
+      const top = padT + k * (laneH + gap), mid = top + laneH / 2, amp = laneH / 2 - 8;
+      const Y = (v) => mid - v * amp;
+      const B = p.B();
+      ctx.strokeStyle = css('--line'); ctx.lineWidth = 1;
+      ctx.beginPath(); ctx.moveTo(padL, mid); ctx.lineTo(w - padR, mid); ctx.stroke();
+      // single-antenna beam envelope
+      ctx.setLineDash([5, 5]); ctx.strokeStyle = css('--muted'); ctx.lineWidth = 1.2;
+      [1, -1].forEach((s) => {
+        ctx.beginPath();
+        for (let i = 0; i <= 200; i++) { const d = -SPAN + i * 2 * SPAN / 200; const y = Y(s * env(d)); i ? ctx.lineTo(X(d), y) : ctx.moveTo(X(d), y); }
+        ctx.stroke();
+      });
+      ctx.setLineDash([]);
+      // fringes of this pair
+      ctx.strokeStyle = css(p.col); ctx.lineWidth = 2; ctx.beginPath();
+      for (let i = 0; i <= N; i++) {
+        const d = -SPAN + i * 2 * SPAN / N;
+        const v = env(d) * Math.cos(2 * Math.PI * B * Math.sin(d * DEG) / lambda);
+        i ? ctx.lineTo(X(d), Y(v)) : ctx.moveTo(X(d), Y(v));
+      }
+      ctx.stroke();
+      // label with colour key
+      const label = p.name + ' · B = ' + B + ' m';
+      ctx.textAlign = 'left';
+      const tw = ctx.measureText(label).width;
+      ctx.fillStyle = css('--surface'); ctx.fillRect(padL + 2, top + 1, tw + 32, 19);
+      ctx.fillStyle = css(p.col); ctx.fillRect(padL + 8, top + 8, 16, 4);
+      ctx.fillStyle = css('--ink'); ctx.fillText(label, padL + 30, top + 14);
+      // where the source sits on this pair's fringes
+      const vs = env(srcDeg) * Math.cos(2 * Math.PI * B * Math.sin(srcDeg * DEG) / lambda);
+      ctx.fillStyle = css('--ink'); ctx.beginPath(); ctx.arc(xs, Y(vs), 5, 0, 2 * Math.PI); ctx.fill();
+    });
+  }
+  function tick(t) {
+    if (playing) {
+      const dt = last ? (t - last) / 1000 : 0;
+      srcDeg += dt * SPEED * 10;
+      if (srcDeg > SPAN) srcDeg = -SPAN;
+      drawFringe();
+    }
+    last = t;
+    requestAnimationFrame(tick);
+  }
+  playBtn.addEventListener('click', () => { playing = !playing; last = 0; setPlayLabel(); });
+  if (!playing) srcDeg = -1.2;
+  [b12In, b23In, fIn].forEach((el) => el.addEventListener('input', () => { updateReadouts(); drawFringe(); }));
+
+  /* ---------- uv coverage (illustrative positions) ---------- */
+  const uvc = document.getElementById('uvCanvas');
+  const LAT = -34.87 * DEG;
+  // Illustrative ENU positions (m): MIA I, MIA II, MIA III
+  const ANT = { I: [0, 0, 0], II: [70, 15, 0], III: [25, 85, 0] };
+  const PAIRS = [['I', 'II', '--sky'], ['I', 'III', '--signal'], ['II', 'III', '--grass']];
+  function drawUV() {
+    const decl = +document.querySelector('input[name="dec"]:checked').value * DEG;
+    const { ctx, w, h } = sizeCanvas(uvc);
+    const lambda = C / 1420.4e6;
+    const size = Math.min(w, h), cx = w / 2, cy = h / 2, R = size / 2 - 34, MAX = 500;
+    const P = (u, v) => [cx + u / MAX * R, cy - v / MAX * R];
+    ctx.clearRect(0, 0, w, h);
+    ctx.fillStyle = css('--surface'); ctx.fillRect(0, 0, w, h);
+    ctx.strokeStyle = css('--line'); ctx.lineWidth = 1;
+    ctx.font = '12px "Open Sans", Arial, sans-serif'; ctx.fillStyle = css('--muted');
+    [100, 200, 300, 400, 500].forEach((r) => { ctx.beginPath(); ctx.arc(cx, cy, r / MAX * R, 0, 2 * Math.PI); ctx.stroke(); });
+    ctx.beginPath(); ctx.moveTo(cx - R, cy); ctx.lineTo(cx + R, cy); ctx.moveTo(cx, cy - R); ctx.lineTo(cx, cy + R); ctx.stroke();
+    ctx.textAlign = 'left';
+    ctx.fillText('u (λ)', cx + R - 34, cy - 8);
+    ctx.fillText('v (λ)', cx + 8, cy - R + 12);
+    ctx.fillText('500 λ', cx + R * 0.70, cy + R * 0.74);
+    PAIRS.forEach(([a, b, col]) => {
+      const e = ANT[b][0] - ANT[a][0], n = ANT[b][1] - ANT[a][1], up = ANT[b][2] - ANT[a][2];
+      const Xb = -n * Math.sin(LAT) + up * Math.cos(LAT), Yb = e, Zb = n * Math.cos(LAT) + up * Math.sin(LAT);
+      ctx.strokeStyle = css(col); ctx.lineWidth = 3; ctx.lineCap = 'round';
+      [1, -1].forEach((s) => {
+        ctx.globalAlpha = s > 0 ? 1 : 0.45;
+        ctx.beginPath(); let pen = false;
+        for (let i = 0; i <= 480; i++) {
+          const H = (-12 + i * 24 / 480) * 15 * DEG;
+          const el = Math.asin(Math.sin(LAT) * Math.sin(decl) + Math.cos(LAT) * Math.cos(decl) * Math.cos(H));
+          if (el < 15 * DEG) { pen = false; continue; }
+          const u = s * (Math.sin(H) * Xb + Math.cos(H) * Yb) / lambda;
+          const v = s * (-Math.sin(decl) * Math.cos(H) * Xb + Math.sin(decl) * Math.sin(H) * Yb + Math.cos(decl) * Zb) / lambda;
+          const [px, py] = P(u, v);
+          if (pen) ctx.lineTo(px, py); else { ctx.moveTo(px, py); pen = true; }
+        }
+        ctx.stroke();
+      });
+      ctx.globalAlpha = 1;
+    });
+  }
+  document.querySelectorAll('input[name="dec"]').forEach((el) => el.addEventListener('change', drawUV));
+
+  /* ---------- Section index: smooth jump + highlight the section in view ---------- */
+  const navBar = document.querySelector('.navlinks');
+  const linkFor = {};
+  navBar.querySelectorAll('a').forEach((a) => { linkFor[a.getAttribute('href').slice(1)] = a; });
+  document.querySelectorAll('.navlinks a, .brand').forEach((a) => a.addEventListener('click', (ev) => {
+    const id = a.getAttribute('href').slice(1);
+    const target = document.getElementById(id);
+    if (!target) return;
+    ev.preventDefault();
+    const behavior = reduced ? 'auto' : 'smooth';
+    if (id === 'top') window.scrollTo({ top: 0, behavior });
+    else target.scrollIntoView({ behavior, block: 'start' });
+  }));
+  let current = null;
+  function setCurrent(id) {
+    current = id;
+    Object.entries(linkFor).forEach(([k, a]) => { if (k === id) a.setAttribute('aria-current', 'true'); else a.removeAttribute('aria-current'); });
+    const a = linkFor[id];
+    if (a) {
+      const l = a.offsetLeft, r = l + a.offsetWidth;
+      if (l < navBar.scrollLeft || r > navBar.scrollLeft + navBar.clientWidth) navBar.scrollTo({ left: Math.max(0, l - 16) });
+    }
+  }
+  if ('IntersectionObserver' in window) {
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach((e) => {
+        if (e.isIntersecting) setCurrent(e.target.id);
+        else if (current === e.target.id) setCurrent(null);
+      });
+    }, { rootMargin: '-35% 0px -60% 0px' });
+    Object.keys(linkFor).forEach((id) => { const s = document.getElementById(id); if (s) io.observe(s); });
+  }
+
+  /* ---------- Photo viewer ---------- */
+  const lb = document.getElementById('lightbox'), lbImg = document.getElementById('lbImg'), lbCap = document.getElementById('lbCap');
+  const canDialog = !!lb && typeof lb.showModal === 'function';
+  document.querySelectorAll('.hero-banner img, .step img, .gallery img, .wide-fig img, .site-photos img').forEach((img) => {
+    if (!canDialog) return;
+    img.classList.add('zoomable');
+    img.tabIndex = 0;
+    img.setAttribute('role', 'button');
+    img.setAttribute('aria-haspopup', 'dialog');
+    const open = () => {
+      lbImg.src = img.currentSrc || img.src;
+      lbImg.alt = img.alt;
+      const cap = img.dataset.cap ? document.getElementById(img.dataset.cap) : img.closest('figure') && img.closest('figure').querySelector('figcaption');
+      const step = img.closest('.step');
+      lbCap.textContent = cap ? cap.textContent : step ? step.querySelector('h3').textContent + ' · ' + step.querySelector('.parts').textContent : '';
+      lb.showModal();
+    };
+    img.addEventListener('click', open);
+    img.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); open(); } });
+  });
+  if (canDialog) {
+    lb.addEventListener('click', (e) => { if (e.target === lb || e.target === lbImg) lb.close(); });
+    lb.querySelector('.lb-close').addEventListener('click', () => lb.close());
+  }
+
+  /* ---------- boot + language / theme / resize redraw ---------- */
+  function redrawAll() { drawResChart(); updateReadouts(); setPlayLabel(); drawFringe(); drawUV(); }
+  document.querySelectorAll('.lang button').forEach((b) => b.addEventListener('click', () => {
+    if (b.dataset.lang === lang) return;
+    applyLang(b.dataset.lang);
+    redrawAll();
+  }));
+  applyLang(initialLang());
+  redrawAll();
+  requestAnimationFrame(tick);
+  let rT; window.addEventListener('resize', () => { clearTimeout(rT); rT = setTimeout(() => { drawFringe(); drawUV(); }, 120); });
+  try { window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', redrawAll); } catch (e) {}
+  new MutationObserver(redrawAll).observe(root, { attributes: true, attributeFilter: ['data-theme'] });
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(redrawAll);
+})();
+</script>
+</body>
+</html>
