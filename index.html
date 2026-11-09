@@ -121,10 +121,10 @@ main section { scroll-margin-top: 72px; }
 .lang button[aria-pressed="true"] { background: var(--btn); color: #FFFFFF; }
 
 /* ---------- Banner ---------- */
-.hero-banner { position: relative; display: grid; place-items: center; min-height: clamp(380px, 46vw, 600px); overflow: hidden; background: #0B1030; }
-.hero-banner img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 50% 45%; background: var(--photo-bg); }
-.hero-banner::after { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(5, 10, 40, 0.30), rgba(5, 10, 40, 0.58)); pointer-events: none; }
-.hero-in { position: relative; z-index: 1; text-align: center; color: #FFFFFF; pointer-events: none; padding-block: 48px; }
+.hero-banner { position: relative; display: grid; place-items: start center; min-height: clamp(400px, 46vw, 600px); overflow: hidden; background: #0B1030; }
+.hero-banner img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 50% 40%; background: var(--photo-bg); }
+.hero-banner::after { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(5, 10, 40, 0.66) 0%, rgba(5, 10, 40, 0.38) 38%, rgba(5, 10, 40, 0.06) 62%, rgba(5, 10, 40, 0.22) 100%); pointer-events: none; }
+.hero-in { position: relative; z-index: 1; text-align: center; color: #FFFFFF; pointer-events: none; padding-block: clamp(28px, 4.5vw, 56px) 0; }
 .hero-kicker { font-family: var(--font-display); font-weight: 600; font-size: 13px; letter-spacing: 0.16em; text-transform: uppercase; color: rgba(255, 255, 255, 0.92); }
 .hero h1 { color: #FFFFFF; font-weight: 500; font-size: clamp(42px, 6.4vw, 76px); line-height: 1.05; margin-top: 16px; text-shadow: 0 2px 18px rgba(0, 0, 0, 0.35); }
 .hero h1 span { display: block; font-weight: 700; font-size: clamp(15px, 1.9vw, 22px); letter-spacing: 0.1em; text-transform: uppercase; margin-top: 18px; }
@@ -354,15 +354,15 @@ dialog.lightbox::backdrop { background: rgba(5, 8, 20, 0.88); }
 
 <header class="hero" id="top">
   <div class="hero-banner">
-    <img src="img/disco.jpg" data-cap="heroCap" data-i18n-alt="alt.disco" alt="Reflector parabólico de malla de 5 metros de MIA, montado sobre un soporte de prueba en un campo verde bajo cielo azul" width="1200" height="1600">
+    <img src="img/portada.jpg" data-cap="heroCap" data-i18n-alt="alt.portada" alt="Vista desde lo alto del predio del IAR: tres antenas de MIA en un campo, una cerca de un sendero y dos al fondo, con una antena de 30 m a la izquierda y un bosque detrás" width="1600" height="1200">
     <div class="wrap hero-in">
       <p class="hero-kicker" data-i18n="hero.eyebrow">Instituto Argentino de Radioastronomía · CONICET · CIC · UNLP</p>
       <h1>MIA Pathfinder <span data-i18n="hero.sub">tres antenas, un radiotelescopio</span></h1>
     </div>
-    <span class="tag" data-i18n="hero.tag">MIA · 13/09/2023</span>
+    <span class="tag" data-i18n="hero.tag">MIA · 16/08/2024</span>
   </div>
   <div class="wrap">
-    <p class="hero-cap" id="heroCap" data-i18n="hero.cap">Reflector de 5 m sobre su soporte de prueba en el predio del IAR. La distancia focal de diseño es 2,165 m (f/D = 0,433).</p>
+    <p class="hero-cap" id="heroCap" data-i18n="hero.cap">Las tres antenas de MIA en el predio del IAR, vistas desde lo alto, con una de las antenas de 30 m del IAR a la izquierda.</p>
   </div>
   <div class="wrap hero-body">
       <p class="lede" data-i18n="hero.lede">Tres reflectores de 5 metros que, combinados, observan el cielo como si fueran una sola antena del tamaño de la distancia que los separa. Es el prototipo del <i>Multipurpose Interferometric Array</i> (MIA), el primer interferómetro con fines científicos de la Argentina. Es la fase 1 del programa y se construye en el predio del IAR.</p>
@@ -504,7 +504,7 @@ dialog.lightbox::backdrop { background: rgba(5, 8, 20, 0.88); }
         <p class="parts" data-i18n="s1.parts">Reflector de 5 m · f/D 0,433 · Vivaldi doble en FR4</p>
       </li>
       <li class="step">
-        <figure><img src="img/cadena-rf.jpg" data-i18n-alt="alt.cadena" alt="Placas de amplificadores de bajo ruido conectadas en cascada con cables coaxiales sobre una mesa de laboratorio" loading="lazy" width="900" height="1200"></figure>
+        <figure><img src="img/cadena-rf.jpg" data-i18n-alt="alt.cadena" alt="Cadena de RF armada sobre una mesa: módulos de fibra óptica, cajas de aluminio, la placa del filtro pasabanda del IAR centrado en 1400 MHz y la placa con el filtro CBP-1450F, unidos con conectores SMA" loading="lazy" width="1200" height="900"></figure>
         <p class="num" data-i18n="s2.num">02 · AMPLIFICAR Y FILTRAR</p>
         <h3 data-i18n="s2.h3">Cadena de RF</h3>
         <p data-i18n="s2.p">La primera etapa fija el ruido del receptor. La segunda amplifica y deja pasar solo la banda de 1250 a 1500 MHz, que contiene la línea de 21 cm.</p>
@@ -525,7 +525,7 @@ dialog.lightbox::backdrop { background: rgba(5, 8, 20, 0.88); }
         <p class="parts" data-i18n="s4.parts">SNAP (CASPER) · ADC HMCAD1511 · FPGA Kintex-7</p>
       </li>
       <li class="step">
-        <figure><img src="img/backend.jpg" data-i18n-alt="alt.backend" alt="Gabinete del Back-End digital abierto, con la placa SNAP y la fuente de alimentación" loading="lazy" width="900" height="1200"></figure>
+        <figure><img src="img/sala-control.jpg" data-i18n-alt="alt.sala" alt="Tres racks de la sala de control con computadoras, un panel de fibras ópticas amarillas y equipos de radiofrecuencia cableados con coaxiales" loading="lazy" width="900" height="1200"></figure>
         <p class="num" data-i18n="s5.num">05 · CORRELACIONAR</p>
         <h3 data-i18n="s5.h3">Correlador FX</h3>
         <p data-i18n="s5.p">Un banco de filtros polifásico y una FFT separan la banda en canales. Después se multiplican y promedian las señales de cada par de antenas.</p>
@@ -638,10 +638,10 @@ dialog.lightbox::backdrop { background: rgba(5, 8, 20, 0.88); }
     <p class="note" style="margin-top:12px" data-i18n="ph.note">Fases 1 y 2: decisiones de configuración del 06/11/2026. Los códigos son de la serie IAR-OBS-MIAPF; los requisitos de las tres fases se reúnen en la matriz 000160-RQ, en preparación.</p>
 
     <div class="gallery">
-      <figure><img src="img/lna.jpg" data-i18n-alt="alt.lna" alt="Placa de amplificador de bajo ruido con conectores SMA" loading="lazy" width="900" height="1200"><figcaption data-i18n="gal.lna">Placa de amplificación y filtrado de la segunda etapa.</figcaption></figure>
+      <figure><img src="img/espectro-rf.jpg" data-i18n-alt="alt.espectro" alt="Pantalla de un analizador de espectro entre 1 y 2 GHz con dos trazas, amarilla y violeta, que forman una meseta por encima del piso de ruido en el centro del rango" loading="lazy" width="1200" height="900"><figcaption data-i18n="gal.espectro">Banda pasante de la cadena de RF entre 1 y 2 GHz, en un analizador de espectro (27/11/2024).</figcaption></figure>
       <figure><img src="img/cajas-rf.jpg" data-i18n-alt="alt.cajas" alt="Dos cajas de aluminio abiertas con placas azules y fibras amarillas" loading="lazy" width="900" height="1200"><figcaption data-i18n="gal.cajas">Cajas de RF de las dos polarizaciones, con la salida por fibra.</figcaption></figure>
       <figure><img src="img/frontend-tubo.jpg" data-i18n-alt="alt.tubo" alt="Estructura del Front-End con las antenas Vivaldi en la base y la electrónica arriba" loading="lazy" width="900" height="1200"><figcaption data-i18n="gal.tubo">Front-End completo: las Vivaldi abajo, la electrónica arriba, dentro del radomo.</figcaption></figure>
-      <figure><img src="img/montura.jpg" data-i18n-alt="alt.montura" alt="Reflector de MIA visto de cerca sobre su soporte de prueba de caños metálicos" loading="lazy" width="900" height="1200"><figcaption data-i18n="gal.montura">Reflector y montura en el soporte de prueba.</figcaption></figure>
+      <figure><img src="img/montura.jpg" data-i18n-alt="alt.montura" alt="Reflector de 5 m de paneles macizos visto desde abajo, sobre su montura alt-azimutal en un poste con patas, con dos contrapesos de hormigón, junto a un galpón" loading="lazy" width="900" height="1200"><figcaption data-i18n="gal.montura">Reflector sobre la montura alt-azimutal, con los contrapesos.</figcaption></figure>
     </div>
 
     <figure class="wide-fig">
@@ -701,9 +701,9 @@ dialog.lightbox::backdrop { background: rgba(5, 8, 20, 0.88); }
       </ul>
     </div>
     <div class="site-photos">
-      <figure><img src="img/zanja.jpg" data-i18n-alt="alt.zanja" alt="Zanja recién excavada que cruza un campo, con una tapa de cámara de inspección al costado" loading="lazy" width="900" height="1200"><figcaption data-i18n="site.c1">Zanja para energía y fibra.</figcaption></figure>
+      <figure><img src="img/antena-base.jpg" data-i18n-alt="alt.base" alt="Antena de MIA sobre su poste y sus fundaciones en el campo, con la huella de una zanja en primer plano y detrás una antena de 30 m del IAR" loading="lazy" width="900" height="1200"><figcaption data-i18n="site.c1">Antena sobre su base, delante de una antena de 30 m del IAR.</figcaption></figure>
       <figure><img src="img/pozo.jpg" data-i18n-alt="alt.pozo" alt="Pozo circular excavado para la fundación de una antena, junto a una cámara de inspección" loading="lazy" width="750" height="1000"><figcaption data-i18n="site.c2">Pozo de fundación.</figcaption></figure>
-      <figure><img src="img/camara.jpg" data-i18n-alt="alt.camara" alt="Cámara de inspección de hormigón con tapa, colocada al borde de la zanja" loading="lazy" width="750" height="1000"><figcaption data-i18n="site.c3">Cámara de inspección.</figcaption></figure>
+      <figure><img src="img/antena-edificio.jpg" style="object-position: 0% 50%" data-i18n-alt="alt.edificio" alt="Antena de MIA con su Front-End en el foco, junto a un edificio blanco del IAR, con una antena de 30 m y mástiles meteorológicos detrás" loading="lazy" width="1200" height="900"><figcaption data-i18n="site.c3">Antena junto a un edificio del IAR, con una antena de 30 m detrás.</figcaption></figure>
     </div>
     </div>
   </div>
@@ -765,9 +765,9 @@ dialog.lightbox::backdrop { background: rgba(5, 8, 20, 0.88); }
     'spec.diam': `diameter`,
     'spec.band': `MHz · phase 1`,
     'spec.hi': `hydrogen line`,
-    'alt.disco': `MIA's 5-metre mesh parabolic reflector on a test stand in a green field under a blue sky`,
-    'hero.tag': `MIA · 13 Sep 2023`,
-    'hero.cap': `The 5 m reflector on its test stand at the IAR grounds. The design focal length is 2.165 m (f/D = 0.433).`,
+    'alt.portada': `View from above of the IAR grounds: three MIA antennas in a field, one next to a path and two further back, with a 30 m antenna on the left and woods behind`,
+    'hero.tag': `MIA · 16 Aug 2024`,
+    'hero.cap': `The three MIA antennas on the IAR grounds, seen from above, with one of the IAR's 30 m antennas on the left.`,
     'idea.eyebrow': `The idea`,
     'idea.h2': `Finer detail without building a giant antenna`,
     'idea.p1': `A radio telescope resolves detail in the sky according to the ratio between the wavelength it observes and its own size. For the 21 cm line of neutral hydrogen, a 5 m antenna sees the sky with a “pixel” of more than two degrees, four times the diameter of the full Moon.`,
@@ -802,7 +802,7 @@ dialog.lightbox::backdrop { background: rgba(5, 8, 20, 0.88); }
     's1.h3': `Reflector and feed`,
     's1.p': `The reflector concentrates the radiation at its focus, where two crossed Vivaldi antennas receive the horizontal and vertical polarizations.`,
     's1.parts': `5 m reflector · f/D 0.433 · dual Vivaldi on FR4`,
-    'alt.cadena': `Low-noise amplifier boards connected in cascade with coaxial cables on a lab bench`,
+    'alt.cadena': `RF chain laid out on a bench: optical-fibre modules, aluminium boxes, the IAR band-pass filter board centred on 1400 MHz and the board with the CBP-1450F filter, joined with SMA connectors`,
     's2.num': `02 · AMPLIFY AND FILTER`,
     's2.h3': `RF chain`,
     's2.p': `The first stage sets the receiver noise. The second amplifies and passes only the 1250–1500 MHz band, which contains the 21 cm line.`,
@@ -817,7 +817,7 @@ dialog.lightbox::backdrop { background: rgba(5, 8, 20, 0.88); }
     's4.h3': `Direct sampling`,
     's4.p': `The SNAP board samples at 800 million samples per second. The 1250–1500 MHz band falls in the fourth Nyquist zone (1200–1600 MHz), so it is digitized without frequency conversion.`,
     's4.parts': `SNAP (CASPER) · HMCAD1511 ADC · Kintex-7 FPGA`,
-    'alt.backend': `Open digital Back-End enclosure, with the SNAP board and the power supply`,
+    'alt.sala': `Three racks in the control room with computers, a patch panel of yellow optical fibres and radio-frequency equipment wired with coaxial cables`,
     's5.num': `05 · CORRELATE`,
     's5.h3': `FX correlator`,
     's5.p': `A polyphase filter bank and an FFT split the band into channels. The signals of each antenna pair are then multiplied and averaged.`,
@@ -893,14 +893,14 @@ dialog.lightbox::backdrop { background: rgba(5, 8, 20, 0.88); }
     'ph.r8b': `<span class="mono">000150-DS</span>, in preparation`,
     'ph.r8c': `<span class="mono">000130-DS</span> R02, in preparation`,
     'ph.note': `Phases 1 and 2: configuration decisions of 6 November 2026. The codes belong to the IAR-OBS-MIAPF series; the requirements of the three phases are being gathered in the 000160-RQ matrix.`,
-    'alt.lna': `Low-noise amplifier board with SMA connectors`,
-    'gal.lna': `Second-stage amplification and filtering board.`,
+    'alt.espectro': `Spectrum analyser screen from 1 to 2 GHz with two traces, yellow and violet, forming a plateau above the noise floor in the middle of the range`,
+    'gal.espectro': `Passband of the RF chain from 1 to 2 GHz, on a spectrum analyser (27 Nov 2024).`,
     'alt.cajas': `Two open aluminium boxes with blue boards and yellow fibres`,
     'gal.cajas': `RF boxes for the two polarizations, with the fibre output.`,
     'alt.tubo': `Front-End structure with the Vivaldi antennas at the base and the electronics above`,
     'gal.tubo': `Complete Front-End: the Vivaldis below, the electronics above, inside the radome.`,
-    'alt.montura': `Close view of the MIA reflector on its test stand made of metal tubes`,
-    'gal.montura': `Reflector and mount on the test stand.`,
+    'alt.montura': `5 m solid-panel reflector seen from below, on its alt-azimuth mount atop a braced pole, with two concrete counterweights, next to a shed`,
+    'gal.montura': `Reflector on the alt-azimuth mount, with the counterweights.`,
     'alt.espec': `Two daily spectrograms between 1418 and 1421.5 megahertz: on the left, the IAR's Antenna 2 shows a curved trace of hydrogen emission; on the right, MIA shows noise with no clear trace`,
     'gal.espec': `First tests, February 2024. One-day spectrograms around 1420 MHz with the antennas fixed at the zenith: the IAR's Antenna 2 (left) records the hydrogen of the Milky Way; MIA (right) does not yet, while the position of the feed relative to the focus is being adjusted.`,
     'fut.eyebrow': `What comes next`,
@@ -924,12 +924,12 @@ dialog.lightbox::backdrop { background: rgba(5, 8, 20, 0.88); }
     'site.f2': `<span>Grounding</span>50 mm² copper ring at 0.5 m depth with ground rods; target resistance of 5 Ω or less.`,
     'site.f3': `<span>Soil</span>Measured resistivity of 14.88 Ω·m.`,
     'site.f4': `<span>Loads</span>Dish and counterweight ≈ 490 kg; design operating wind 50 km/h, survival 165 km/h.`,
-    'alt.zanja': `Freshly dug trench crossing a field, with an inspection chamber lid beside it`,
-    'site.c1': `Trench for power and fibre.`,
+    'alt.base': `MIA antenna on its pole and foundations in the field, with the line of a trench in the foreground and one of the IAR's 30 m antennas behind`,
+    'site.c1': `Antenna on its base, in front of one of the IAR's 30 m antennas.`,
     'alt.pozo': `Circular pit dug for an antenna foundation, next to an inspection chamber`,
     'site.c2': `Foundation pit.`,
-    'alt.camara': `Concrete inspection chamber with lid, at the edge of the trench`,
-    'site.c3': `Inspection chamber.`,
+    'alt.edificio': `MIA antenna with its Front-End at the focus, next to a white IAR building, with a 30 m antenna and weather masts behind`,
+    'site.c3': `Antenna next to an IAR building, with a 30 m antenna behind.`,
     'foot.eyebrow': `Sources`,
     'foot.p': `Phase 1 Master Design Report (draft), which brings together the general systems description, the Design Report and the Back-End details; the plan for one Master Design Report per phase; the Front-End requirements and the uLNA design; and the feed adjustment and grounding reports. The phase scheme and its configuration follow the project decisions of November 2026; the documents are under review.`,
     'foot.addr': `Argentine Institute of Radio Astronomy · Camino Gral. Belgrano km 40, Berazategui, Buenos Aires Province, Argentina · <a href="https://www.iar.unlp.edu.ar/">www.iar.unlp.edu.ar</a>`,
