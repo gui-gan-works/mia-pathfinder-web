@@ -262,6 +262,28 @@ table.phases td { width: 28%; }
 .science li b { font-family: var(--font-display); display: block; font-size: 18px; font-weight: 600; color: var(--head); margin-bottom: 8px; }
 .science li b::before { content: ""; display: block; width: 40px; height: 3px; background: var(--signal); margin: 0 auto 14px; }
 
+/* ---------- Publicaciones ---------- */
+.papers { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px; }
+.paper { background: var(--surface); border: 1px solid var(--line); border-top: 3px solid var(--sky); border-radius: 4px; padding: 20px 22px; display: flex; flex-direction: column; gap: 8px; min-width: 0; }
+.paper-meta { font-family: var(--font-display); font-weight: 700; font-size: 12.5px; letter-spacing: 0.05em; color: var(--accent-ink); }
+.paper h3 { font-size: 17.5px; line-height: 1.35; }
+.paper-authors { font-size: 14px; line-height: 1.5; color: var(--muted); }
+.paper-note { font-size: 15px; line-height: 1.6; }
+.paper-links { margin-top: auto; padding-top: 6px; display: flex; flex-wrap: wrap; gap: 8px; }
+.paper-links a {
+  font-family: var(--font-display); font-weight: 700; font-size: 12.5px; letter-spacing: 0.06em; text-decoration: none;
+  color: var(--accent-ink); border: 1px solid var(--line); border-radius: 4px; padding: 5px 10px; transition: background-color 0.3s ease, color 0.3s ease;
+}
+.paper-links a:hover { color: #FFFFFF; background: var(--btn); border-color: var(--btn); }
+.workshop { margin-top: 24px; display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 14px 32px; align-items: center; padding: 24px 26px; background: #1A237E; color: #E8EAF6; border-radius: 4px; }
+.workshop .paper-meta { color: #C5CAE9; font-size: 12px; letter-spacing: 0.1em; text-transform: uppercase; }
+.workshop h3 { color: #FFFFFF; font-size: 19px; margin-top: 6px; }
+.workshop p { font-size: 15px; line-height: 1.6; }
+.workshop p + p { margin-top: 8px; }
+.workshop .paper-links { margin: 0; padding: 0; }
+.workshop .paper-links a { color: #FFFFFF; border-color: rgba(255, 255, 255, 0.4); }
+.workshop .paper-links a:hover { color: #1A237E; background: #FFFFFF; border-color: #FFFFFF; }
+
 /* ---------- El sitio ---------- */
 .site-grid { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr); gap: clamp(28px, 5vw, 64px); align-items: start; }
 .site-photos { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
@@ -305,6 +327,7 @@ dialog.lightbox::backdrop { background: rgba(5, 8, 20, 0.88); }
   .steps { grid-template-columns: minmax(0, 1fr); }
   .roadmap { grid-template-columns: minmax(0, 1fr); }
   .science { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .papers, .workshop { grid-template-columns: minmax(0, 1fr); }
   .foot-grid { grid-template-columns: minmax(0, 1fr); gap: 32px; }
   .foot-logos { flex-direction: row; flex-wrap: wrap; align-items: center; gap: 20px 28px; }
   .foot-logos img { width: 96px; }
@@ -344,6 +367,7 @@ dialog.lightbox::backdrop { background: rgba(5, 8, 20, 0.88); }
       <li><a href="#fases" data-i18n="nav.ph">Fases</a></li>
       <li><a href="#futuro" data-i18n="nav.fut">Futuro</a></li>
       <li><a href="#sitio" data-i18n="nav.site">Sitio</a></li>
+      <li><a href="#publicaciones" data-i18n="nav.pub">Publicaciones</a></li>
     </ul>
     <div class="lang" role="group" aria-label="Idioma / Language">
       <button type="button" data-lang="es" lang="es" aria-pressed="true" title="Español">ES</button>
@@ -708,6 +732,72 @@ dialog.lightbox::backdrop { background: rgba(5, 8, 20, 0.88); }
     </div>
   </div>
 </section>
+
+<section id="publicaciones" class="band">
+  <div class="wrap">
+    <div class="sec-head">
+      <p class="eyebrow" data-i18n="pub.eyebrow">Publicaciones</p>
+      <h2 data-i18n="pub.h2">Artículos sobre MIA</h2>
+      <p class="lede" data-i18n="pub.lede">Trabajos sobre el proyecto, el Pathfinder y la ciencia que hará MIA. Todos se pueden leer en línea sin costo.</p>
+    </div>
+    <ol class="papers">
+      <li class="paper">
+        <p class="paper-meta">RMxAC 56, 63–70 · 2024</p>
+        <h3 lang="en">The Multipurpose Interferometric Array and the Development of its Technological Demonstrator</h3>
+        <p class="paper-authors">G. Gancio, G. E. Romero, P. Benaglia, J. M. González, E. Rasztocky et al.</p>
+        <p class="paper-note" data-i18n="pub.n1">Propuesta del instrumento y estado de cada etapa del Pathfinder. Presentado en el workshop por los 60 años del IAR.</p>
+        <p class="paper-links"><a href="https://doi.org/10.22201/ia.14052059p.2024.56.10">DOI</a><a href="https://arxiv.org/abs/2309.16891">arXiv:2309.16891</a></p>
+      </li>
+      <li class="paper">
+        <p class="paper-meta">BAAA 65, 293–296 · 2024</p>
+        <h3 lang="en">The multipurpose interferometric array [MIA] and the development of its technological demonstrator</h3>
+        <p class="paper-authors">G. Gancio, G. E. Romero, P. Benaglia, J. M. González, E. Rasztocky et al.</p>
+        <p class="paper-note" data-i18n="pub.n2">Versión presentada en la LXV Reunión Anual de la Asociación Argentina de Astronomía (San Juan, 2022), con el estado del Pathfinder y el plan a corto plazo.</p>
+        <p class="paper-links"><a href="https://sedici.unlp.edu.ar/handle/10915/171858">SEDICI</a></p>
+      </li>
+      <li class="paper">
+        <p class="paper-meta">RMxAC 56, 71–75 · 2024</p>
+        <h3 lang="en">End to End Developments for the Multipurpose Interferometer Array Pathfinder from the IAR Electronics Laboratory</h3>
+        <p class="paper-authors">J. M. González, H. Command, G. Valdez</p>
+        <p class="paper-note" data-i18n="pub.n3">Diseño y avance de la electrónica del Pathfinder hecha en el Laboratorio de Electrónica del IAR: control de posición, radiofrecuencia, adquisición y procesamiento.</p>
+        <p class="paper-links"><a href="https://doi.org/10.22201/ia.14052059p.2024.56.11">DOI</a><a href="https://arxiv.org/abs/2312.17066">arXiv:2312.17066</a></p>
+      </li>
+      <li class="paper">
+        <p class="paper-meta">RMxAC 56, 90–95 · 2024</p>
+        <h3 lang="en">Development of an Antenna Array Simulator</h3>
+        <p class="paper-authors">L. F. Cabral</p>
+        <p class="paper-note" data-i18n="pub.n4">Simulador de la respuesta de un interferómetro según la posición de las antenas, con simulaciones para MIA.</p>
+        <p class="paper-links"><a href="https://doi.org/10.22201/ia.14052059p.2024.56.15">DOI</a></p>
+      </li>
+      <li class="paper">
+        <p class="paper-meta">RMxAC 56, 145–149 · 2024</p>
+        <h3 lang="en">An Approximation to the Detection of the 21cm Line of the Reionization Epoch with the MIA Interferometer</h3>
+        <p class="paper-authors">O. García, M. Domínguez, C. Valotto, L. Pellizza, M. Ramirez et al.</p>
+        <p class="paper-note" data-i18n="pub.n5">Posibilidades de observar con MIA la línea de 21 cm de la época de reionización.</p>
+        <p class="paper-links"><a href="https://doi.org/10.22201/ia.14052059p.2024.56.26">DOI</a></p>
+      </li>
+      <li class="paper">
+        <p class="paper-meta">RMxAC 56, 117–123 · 2024</p>
+        <h3 lang="en">Science Research from the Instituto Argentino de Radioastronomía</h3>
+        <p class="paper-authors">P. Benaglia</p>
+        <p class="paper-note" data-i18n="pub.n6">La producción científica del IAR y los objetivos científicos de MIA.</p>
+        <p class="paper-links"><a href="https://doi.org/10.22201/ia.14052059p.2024.56.21">DOI</a></p>
+      </li>
+    </ol>
+    <div class="workshop">
+      <div>
+        <p class="paper-meta" data-i18n="pub.ws.meta">Buenos Aires · 15 al 18 de noviembre de 2022</p>
+        <h3 data-i18n="pub.ws.h3">Workshop por los 60 años del IAR</h3>
+        <p data-i18n="pub.ws.p1"><i lang="en">Prospects for Low Frequency Radio Astronomy in South America</i>. Allí se presentó MIA, y las actas forman el volumen 56 de la <i>Revista Mexicana de Astronomía y Astrofísica, Serie de Conferencias</i> (2024), donde están la mayoría de los artículos de esta lista.</p>
+      </div>
+      <p class="paper-links">
+        <a href="https://www.iar.unlp.edu.ar/index.php/2022/07/12/workshop-aniversario-por-los-60-anos-del-iar/" data-i18n="pub.ws.l1">Nota del IAR</a>
+        <a href="https://congresos.unlp.edu.ar/iar60ws/" data-i18n="pub.ws.l2">Sitio del workshop</a>
+        <a href="https://astronomia.unam.mx/journals/rmxac/issue/view/342" data-i18n="pub.ws.l3">Actas · RMxAC 56</a>
+      </p>
+    </div>
+  </div>
+</section>
 </main>
 
 <footer class="site-footer">
@@ -934,7 +1024,23 @@ dialog.lightbox::backdrop { background: rgba(5, 8, 20, 0.88); }
     'foot.p': `Phase 1 Master Design Report (draft), which brings together the general systems description, the Design Report and the Back-End details; the plan for one Master Design Report per phase; the Front-End requirements and the uLNA design; and the feed adjustment and grounding reports. The phase scheme and its configuration follow the project decisions of November 2026; the documents are under review.`,
     'foot.addr': `Argentine Institute of Radio Astronomy · Camino Gral. Belgrano km 40, Berazategui, Buenos Aires Province, Argentina · <a href="https://www.iar.unlp.edu.ar/">www.iar.unlp.edu.ar</a>`,
     'foot.logo': `IAR · website of the Argentine Institute of Radio Astronomy`,
-    'foot.bar': `MIA Pathfinder project · Argentine Institute of Radio Astronomy (CONICET · CIC · UNLP) · 2026`
+    'foot.bar': `MIA Pathfinder project · Argentine Institute of Radio Astronomy (CONICET · CIC · UNLP) · 2026`,
+    'nav.pub': `Papers`,
+    'pub.eyebrow': `Publications`,
+    'pub.h2': `Papers on MIA`,
+    'pub.lede': `Papers on the project, the Pathfinder and the science MIA will do. All of them can be read online free of charge.`,
+    'pub.n1': `The instrument proposal and the status of each stage of the Pathfinder. Presented at the IAR 60th-anniversary workshop.`,
+    'pub.n2': `Version presented at the 65th Annual Meeting of the Argentine Astronomical Association (San Juan, 2022), with the status of the Pathfinder and the short-term plan.`,
+    'pub.n3': `Design and progress of the Pathfinder electronics built at the IAR Electronics Laboratory: positioning control, radio frequency, acquisition and processing.`,
+    'pub.n4': `A simulator of an interferometer’s response as a function of the antenna positions, with simulations for MIA.`,
+    'pub.n5': `Prospects for observing the 21 cm line of the reionization epoch with MIA.`,
+    'pub.n6': `The IAR’s scientific output and MIA’s science goals.`,
+    'pub.ws.meta': `Buenos Aires · 15–18 November 2022`,
+    'pub.ws.h3': `IAR 60th-anniversary workshop`,
+    'pub.ws.p1': `<i lang="en">Prospects for Low Frequency Radio Astronomy in South America</i>. MIA was presented there, and the proceedings make up volume 56 of the <i>Revista Mexicana de Astronomía y Astrofísica, Serie de Conferencias</i> (2024), which holds most of the papers in this list.`,
+    'pub.ws.l1': `IAR news item`,
+    'pub.ws.l2': `Workshop website`,
+    'pub.ws.l3': `Proceedings · RMxAC 56`
   };
   // Strings built by the script itself (charts, canvas labels, button).
   const UI = {
