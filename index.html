@@ -655,11 +655,11 @@ dialog.lightbox::backdrop { background: rgba(5, 8, 20, 0.88); }
           <tr><th scope="row" data-i18n="ph.r5">Digitalización</th><td data-i18n="ph.r5a">3 entradas a 800 MS/s, muestreo directo en zona de Nyquist</td><td data-i18n="ph.r5b">6 entradas por nodo (3 antenas × 2 polarizaciones) a 500 MS/s</td></tr>
           <tr><th scope="row" data-i18n="ph.r6">Canales</th><td data-i18n="ph.r6a">1024 canales de 0,39 MHz</td><td data-i18n="ph.r6b">256 canales para transitorios y 16 384 para líneas espectrales</td></tr>
           <tr><th scope="row" data-i18n="ph.r7">Viento</th><td data-i18n="ph.r7a">Estacionamiento al cenit con más de 45&nbsp;km/h</td><td data-i18n="ph.same">Igual</td><td data-i18n="ph.r7b">Igual; supervivencia a 165 km/h</td></tr>
-          <tr><th scope="row" data-i18n="ph.r8">Documento</th><td data-i18n="ph.r8a"><span class="mono">000140-DS</span>, borrador R00</td><td data-i18n="ph.r8b"><span class="mono">000150-DS</span>, en preparación</td><td data-i18n="ph.r8c"><span class="mono">000130-DS</span> R02, en preparación</td></tr>
+          <tr><th scope="row" data-i18n="ph.r8">Documento</th><td data-i18n="ph.r8a"><span class="mono">000140-DS</span> R01, aprobado</td><td data-i18n="ph.r8b"><span class="mono">000150-DS</span> R00, esqueleto</td><td data-i18n="ph.r8c"><span class="mono">000130-DS</span> R02</td></tr>
         </tbody>
       </table>
     </div>
-    <p class="note" style="margin-top:12px" data-i18n="ph.note">Fases 1 y 2: decisiones de configuración del 06/11/2026. Los códigos son de la serie IAR-OBS-MIAPF; los requisitos de las tres fases se reúnen en la matriz 000160-RQ, en preparación.</p>
+    <p class="note" style="margin-top:12px" data-i18n="ph.note">Fases 1 y 2: decisiones de configuración del 06/11/2026. Los códigos son de la serie IAR-OBS-MIAPF; los requisitos de las tres fases están en la matriz 000160-RQ.</p>
 
     <div class="gallery">
       <figure><img src="img/espectro-rf.jpg" data-i18n-alt="alt.espectro" alt="Pantalla de un analizador de espectro entre 1 y 2 GHz con dos trazas, amarilla y violeta, que forman una meseta por encima del piso de ruido en el centro del rango" loading="lazy" width="1200" height="900"><figcaption data-i18n="gal.espectro">Banda pasante de la cadena de RF entre 1 y 2 GHz, en un analizador de espectro (27/11/2024).</figcaption></figure>
@@ -831,8 +831,8 @@ dialog.lightbox::backdrop { background: rgba(5, 8, 20, 0.88); }
     </div>
     <div class="foot-src">
     <p class="eyebrow" data-i18n="foot.eyebrow">Fuentes</p>
-    <p data-i18n="foot.p">Master Design Report de la fase 1 (borrador), que reúne la descripción general de sistemas, el Design Report y el detalle del Back-End; plan de Master Design Reports por fase; requisitos del Front-End y diseño del uLNA; informes de ajuste del iluminador y de puesta a tierra. El esquema de fases y su configuración corresponden a las decisiones del proyecto de noviembre de 2026; los documentos están en revisión.</p>
-    <p class="mono">IAR-OBS-MIAPF-000140-DS · 000130-DS · 020205-RQ · 020210-DS · 050100-RP · 070200-DG</p>
+    <p data-i18n="foot.p">Master Design Report de la fase 1 (R01, aprobado el 09/11/2026), que reúne la descripción general de sistemas, el diseño de cada sistema y el detalle del Back-End; Master Design Report de la fase 2, con el diseño del uLNA; matriz de requisitos de las tres fases; informes de ajuste del iluminador y de instalación eléctrica y puesta a tierra. El esquema de fases y su configuración corresponden a las decisiones del proyecto de noviembre de 2026.</p>
+    <p class="mono">IAR-OBS-MIAPF-000140-DS · 000130-DS · 000160-RQ · 050100-RP · 070200-DG</p>
     <p data-i18n="foot.addr">Instituto Argentino de Radioastronomía · Camino Gral. Belgrano km 40, Berazategui, provincia de Buenos Aires, Argentina · <a href="https://www.iar.unlp.edu.ar/">www.iar.unlp.edu.ar</a></p>
     </div>
     <div class="foot-iar">
@@ -1000,10 +1000,10 @@ dialog.lightbox::backdrop { background: rgba(5, 8, 20, 0.88); }
     'ph.r7a': `Stow at the zenith above 45&nbsp;km/h`,
     'ph.r7b': `Same; survival at 165 km/h`,
     'ph.r8': `Document`,
-    'ph.r8a': `<span class="mono">000140-DS</span>, draft R00`,
-    'ph.r8b': `<span class="mono">000150-DS</span>, in preparation`,
-    'ph.r8c': `<span class="mono">000130-DS</span> R02, in preparation`,
-    'ph.note': `Phases 1 and 2: configuration decisions of 6 November 2026. The codes belong to the IAR-OBS-MIAPF series; the requirements of the three phases are being gathered in the 000160-RQ matrix.`,
+    'ph.r8a': `<span class="mono">000140-DS</span> R01, approved`,
+    'ph.r8b': `<span class="mono">000150-DS</span> R00, outline`,
+    'ph.r8c': `<span class="mono">000130-DS</span> R02`,
+    'ph.note': `Phases 1 and 2: configuration decisions of 6 November 2026. The codes belong to the IAR-OBS-MIAPF series; the requirements of the three phases are in the 000160-RQ matrix.`,
     'alt.espectro': `Spectrum analyser screen from 1 to 2 GHz with two traces, yellow and violet, forming a plateau above the noise floor in the middle of the range`,
     'gal.espectro': `Passband of the RF chain from 1 to 2 GHz, on a spectrum analyser (27 Nov 2024).`,
     'alt.cajas': `Two open aluminium boxes with blue boards and yellow fibres`,
@@ -1042,7 +1042,7 @@ dialog.lightbox::backdrop { background: rgba(5, 8, 20, 0.88); }
     'alt.edificio': `MIA antenna with its Front-End at the focus, next to a white IAR building, with a 30 m antenna and weather masts behind`,
     'site.c3': `Antenna next to an IAR building, with a 30 m antenna behind.`,
     'foot.eyebrow': `Sources`,
-    'foot.p': `Phase 1 Master Design Report (draft), which brings together the general systems description, the Design Report and the Back-End details; the plan for one Master Design Report per phase; the Front-End requirements and the uLNA design; and the feed adjustment and grounding reports. The phase scheme and its configuration follow the project decisions of November 2026; the documents are under review.`,
+    'foot.p': `Phase 1 Master Design Report (R01, approved on 9 November 2026), which brings together the general systems description, the design of each system and the Back-End details; the phase 2 Master Design Report, with the uLNA design; the requirements matrix for the three phases; and the feed adjustment and electrical installation and grounding reports. The phase scheme and its configuration follow the project decisions of November 2026.`,
     'foot.addr': `Argentine Institute of Radio Astronomy · Camino Gral. Belgrano km 40, Berazategui, Buenos Aires Province, Argentina · <a href="https://www.iar.unlp.edu.ar/">www.iar.unlp.edu.ar</a>`,
     'foot.logo': `IAR · website of the Argentine Institute of Radio Astronomy`,
     'foot.bar': `MIA Pathfinder project · Argentine Institute of Radio Astronomy (CONICET · CIC · UNLP) · 2026`,
